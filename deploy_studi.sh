@@ -50,14 +50,15 @@ php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
-# 7. Memperbaiki Hak Akses Permisi Folder Storage & Cache
-echo -e "${YELLOW}[7/8] Memperbaiki izin direktori (permissions)...${NC}"
-sudo chown -R www-data:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
+# 7. Mematikan Maintenance Mode
+echo -e "${YELLOW}[7/8] Mematikan Maintenance Mode (Aplikasi Online)...${NC}"
+php artisan up || sudo php artisan up
 
-# 8. Mematikan Maintenance Mode
-echo -e "${YELLOW}[8/8] Mematikan Maintenance Mode (Aplikasi Online)...${NC}"
-php artisan up
+# 8. Memperbaiki Hak Akses Permisi Folder Storage & Cache
+echo -e "${YELLOW}[8/8] Memperbaiki izin direktori (permissions)...${NC}"
+CURRENT_USER=${SUDO_USER:-$USER}
+sudo chown -R $CURRENT_USER:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
 
 echo -e "${GREEN}====================================================${NC}"
 echo -e "${GREEN}  DEPLOYMENT SESELESAI & APLIKASI SIAP BEROPERASI!  ${NC}"
