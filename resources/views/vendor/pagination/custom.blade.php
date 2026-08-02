@@ -1,4 +1,15 @@
 @if ($paginator->hasPages())
+    <?php
+        $currentPage = $paginator->currentPage();
+        $lastPage = $paginator->lastPage();
+
+        // Tampilkan maksimal 4 angka halaman
+        $startPage = max(1, $currentPage - 1);
+        $endPage = min($lastPage, $startPage + 3);
+        if ($endPage - $startPage < 3) {
+            $startPage = max(1, $endPage - 3);
+        }
+    ?>
     <ul class="pagination custom-pagination">
         {{-- Previous Page Link --}}
         @if ($paginator->onFirstPage())
@@ -7,24 +18,14 @@
             <li class="page-item"><a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">Previous</a></li>
         @endif
 
-        {{-- Pagination Elements --}}
-        @foreach ($elements as $element)
-            {{-- "Three Dots" Separator --}}
-            @if (is_string($element))
-                <li class="page-item disabled"><span class="page-link">{{ $element }}</span></li>
+        {{-- Max 4 Page Numbers --}}
+        @for ($i = $startPage; $i <= $endPage; $i++)
+            @if ($i == $currentPage)
+                <li class="page-item active"><span class="page-link">{{ $i }}</span></li>
+            @else
+                <li class="page-item"><a class="page-link" href="{{ $paginator->url($i) }}">{{ $i }}</a></li>
             @endif
-
-            {{-- Array Of Links --}}
-            @if (is_array($element))
-                @foreach ($element as $page => $url)
-                    @if ($page == $paginator->currentPage())
-                        <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
-                    @else
-                        <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
-                    @endif
-                @endforeach
-            @endif
-        @endforeach
+        @endfor
 
         {{-- Next Page Link --}}
         @if ($paginator->hasMorePages())

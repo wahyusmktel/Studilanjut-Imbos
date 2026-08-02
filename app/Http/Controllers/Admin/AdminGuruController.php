@@ -19,7 +19,7 @@ class AdminGuruController extends Controller
             $query->where('nama', 'like', '%' . $search . '%');
         }
 
-        $gurus = $query->simplePaginate(30)->appends(['search' => $request->input('search')]);
+        $gurus = $query->paginate(10)->appends(['search' => $request->input('search')]);
         $mataPelajarans = MataPelajaran::all();
 
         return view('admin.guru.data_guru', compact('gurus', 'mataPelajarans'));

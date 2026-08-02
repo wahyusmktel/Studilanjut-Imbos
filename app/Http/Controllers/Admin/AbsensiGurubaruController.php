@@ -15,22 +15,31 @@ class AbsensiGurubaruController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Absensi::with('guru', 'kelas', 'guru.mataPelajaran');
+        $query = Absensi::with('guru', 'kelas', 'guru.mataPelajaran')->orderBy('tanggal', 'desc');
 
-        if ($request->has('start_date') && $request->has('end_date')) {
+        if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('tanggal', [$request->start_date, $request->end_date]);
         }
 
-        if ($request->has('guru_id') && $request->guru_id != '') {
+        if ($request->filled('guru_id')) {
             $query->where('guru_id', $request->guru_id);
         }
 
-        $absensis = $query->paginate(10);
+        $absensis = $query->paginate(10)->appends($request->all());
         $gurus = Guru::all();
         $mataPelajarans = MataPelajaran::all();
 
-        // Prepare data for the chart per month
-        $attendanceChartData = $this->prepareMonthlyAttendanceChartData($absensis);
+        // Prepare chart data from ALL matching records, not just current paginated 10 items
+        $chartQuery = Absensi::query();
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $chartQuery->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+        }
+        if ($request->filled('guru_id')) {
+            $chartQuery->where('guru_id', $request->guru_id);
+        }
+        $allChartAbsensis = $chartQuery->get();
+
+        $attendanceChartData = $this->prepareMonthlyAttendanceChartData($allChartAbsensis);
 
         return view('admin.absensi_guru.index', compact('absensis', 'gurus', 'mataPelajarans', 'attendanceChartData'));
     }
@@ -61,22 +70,33 @@ class AbsensiGurubaruController extends Controller
 
     private function prepareMonthlyAttendanceChartData($absensis)
     {
-        $monthlyAttendance = [];
+        $monthlyData = [];
 
         foreach ($absensis as $absensi) {
-            $month = \Carbon\Carbon::parse($absensi->tanggal)->format('Y-m');
+            if (!$absensi->tanggal) continue;
+            $carbonDate = \Carbon\Carbon::parse($absensi->tanggal);
+            $sortKey = $carbonDate->format('Y-m');
+            $monthName = ucfirst($carbonDate->locale('id')->isoFormat('MMMM YYYY'));
 
-            if (!isset($monthlyAttendance[$month])) {
-                $monthlyAttendance[$month] = 0;
+            if (!isset($monthlyData[$sortKey])) {
+                $monthlyData[$sortKey] = [
+                    'label' => $monthName,
+                    'count' => 0
+                ];
             }
 
-            $monthlyAttendance[$month]++;
+            $monthlyData[$sortKey]['count']++;
         }
 
-        ksort($monthlyAttendance);
+        ksort($monthlyData);
 
-        $labels = array_keys($monthlyAttendance);
-        $data = array_values($monthlyAttendance);
+        $labels = [];
+        $data = [];
+
+        foreach ($monthlyData as $item) {
+            $labels[] = $item['label'];
+            $data[] = $item['count'];
+        }
 
         return [
             'labels' => $labels,

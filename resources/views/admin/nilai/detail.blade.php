@@ -3,339 +3,298 @@
 @section('title', 'Detail Nilai Siswa')
 
 @section('content')
-    <!-- Title -->
-    <div class="row heading-bg">
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-            <h5 class="txt-dark">Detail Nilai Siswa</h5>
-        </div>
-        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-            <ol class="breadcrumb">
-                <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ route('admin.nilai-siswa.index') }}">Nilai</a></li>
-                <li class="active"><span>Detail Nilai Siswa</span></li>
-            </ol>
-        </div>
+<!-- Title Breadcrumb -->
+<div class="row heading-bg">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <h5 class="txt-dark">Detail Nilai Siswa</h5>
     </div>
-    <!-- /Title -->
+    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12">
+        <ol class="breadcrumb">
+            <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ route('admin.nilai-siswa.index') }}">Nilai Siswa</a></li>
+            <li class="active"><span>Detail Nilai</span></li>
+        </ol>
+    </div>
+</div>
+<!-- /Title Breadcrumb -->
 
-    <!-- Filter -->
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="panel panel-default border-panel card-view">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-8 col-xs-6">
-                            <h6 class="panel-title txt-dark">Detail Nilai Siswa: {{ $siswa->nama_siswa }}</h6>
-                        </div>
-                        <div class="col-md-4 col-xs-6 text-right">
-                            {{-- <a href="{{ route('admin.nilai.downloadSertifikat', ['id' => $siswa->id, 'tahun_pelajaran_id' => $tahunPelajaranId, 'tryout_id' => $tryoutId]) }}"
-                                class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> Download Sertifikat</a> --}}
-                            <a href="#" id="downloadSertifikat" class="btn btn-primary"><i
-                                    class="fa fa-file-pdf-o"></i> Download Sertifikat</a>
-                            <a href="{{ route('admin.nilai-siswa.index') }}" class="btn btn-default"><i
-                                    class="fa fa-arrow-left"></i> Kembali</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="panel-wrapper collapse in">
-                    <div class="panel-body">
-                        <form method="GET" action="{{ route('admin.nilai.detail', $siswa->id) }}">
-                            <div class="row">
-                                {{-- <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="tahun_pelajaran_id">Tahun Pelajaran</label>
-                                        <select class="form-control" id="tahun_pelajaran_id" name="tahun_pelajaran_id">
-                                            <option value="">Pilih Tahun Pelajaran</option>
-                                            @foreach ($tahunPelajarans as $tp)
-                                                <option value="{{ $tp->id }}"
-                                                    {{ $tp->id == $tahunPelajaranId ? 'selected' : '' }}>
-                                                    {{ $tp->nama_tahun_pelajaran }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="tahun_pelajaran_id">Tahun Pelajaran (Aktif)</label>
-                                        <input type="text" class="form-control"
-                                            value="{{ $tahunPelajaranAktif->nama_tahun_pelajaran }} (Semester {{ $tahunPelajaranAktif->semester == 1 ? 'Ganjil' : 'Genap' }})"
-                                            readonly>
-                                        {{-- Input tersembunyi untuk tetap mengirim ID saat filter --}}
-                                        <input type="hidden" id="tahun_pelajaran_id" name="tahun_pelajaran_id"
-                                            value="{{ $tahunPelajaranAktif->id }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="tryout_id">Try Out</label>
-                                        <select class="form-control" id="tryout_id" name="tryout_id">
-                                            <option value="">Pilih Try Out</option>
-                                            @foreach ($tryouts as $tryout)
-                                                <option value="{{ $tryout->id }}"
-                                                    {{ $tryout->id == $tryoutId ? 'selected' : '' }}>
-                                                    {{ $tryout->nama_tryout }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Filter</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<!-- Student Info Card Header -->
+<div class="student-hero-card">
+    <div class="student-hero-profile">
+        @if($siswa->foto)
+            <div class="student-hero-avatar">
+                <img src="{{ asset('storage/' . $siswa->foto) }}" alt="{{ $siswa->nama_siswa }}">
+            </div>
+        @else
+            <div class="student-hero-avatar">
+                {{ strtoupper(substr($siswa->nama_siswa, 0, 1)) }}
+            </div>
+        @endif
+        <div class="student-hero-info">
+            <h3 class="student-hero-name">{{ $siswa->nama_siswa }}</h3>
+            <div class="student-hero-meta">
+                @if($siswa->nis)
+                    <span class="user-subtext"><i class="fa-solid fa-id-card"></i> NIS: <strong>{{ $siswa->nis }}</strong></span>
+                @endif
+                <span class="badge-modern primary"><i class="fa-solid fa-sitemap mr-5"></i>{{ $siswa->kelas ? $siswa->kelas->nama_kelas : '-' }}</span>
+                @if($siswa->programBimbel)
+                    <span class="badge-modern success"><i class="fa-solid fa-graduation-cap mr-5"></i>{{ $siswa->programBimbel->nama_program }}</span>
+                @endif
             </div>
         </div>
     </div>
-    <!-- /Filter -->
-
-    {{-- Grafik --}}
-    {{-- <div class="row">
-    <div class="col-sm-12">
-        <canvas id="nilaiChart" width="400" height="200"></canvas>
+    <div class="student-hero-actions">
+        <a href="#" id="downloadSertifikat" class="btn-modern btn-modern-primary">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>Download Sertifikat</span>
+        </a>
+        <a href="{{ route('admin.nilai-siswa.index') }}" class="btn-modern btn-modern-secondary">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Kembali</span>
+        </a>
     </div>
-</div> --}}
+</div>
 
-    <!-- Row -->
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="panel panel-default border-panel card-view">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-8 col-xs-6">
-                            <h6 class="panel-title txt-dark">Nilai Siswa</h6>
-                        </div>
-                    </div>
+<!-- Main Table Card -->
+<div class="modern-table-card">
+    <!-- Filter Bar Header -->
+    <div class="modern-filter-bar">
+        <form method="GET" action="{{ route('admin.nilai.detail', $siswa->id) }}">
+            <div class="modern-filter-grid">
+                <div class="form-group mb-0">
+                    <label for="tahun_pelajaran_id" class="font-weight-600">Tahun Pelajaran (Aktif)</label>
+                    <input type="text" class="form-control"
+                        value="{{ $tahunPelajaranAktif ? $tahunPelajaranAktif->nama_tahun_pelajaran . ' - Semester ' . $tahunPelajaranAktif->semester : 'Tidak ada tahun aktif' }}"
+                        readonly style="background: #ffffff; font-weight: 600; color: #475569;">
+                    <input type="hidden" id="tahun_pelajaran_id" name="tahun_pelajaran_id" value="{{ $tahunPelajaranAktif ? $tahunPelajaranAktif->id : '' }}">
                 </div>
-                <div class="clearfix"></div>
-                <div class="panel-wrapper collapse in">
-                    <div class="panel-body">
-                        <div class="table-wrap">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Mata Pelajaran</th>
-                                            <th>Try Out</th>
-                                            <th>Tahun Pelajaran</th>
-                                            <th>Semester</th>
-                                            <th>Nilai</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($siswa->nilais as $index => $nilai)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $nilai->mataPelajaran?->namaMataPelajaran ?? 'Mapel Dihapus' }}</td>
-                                                <td>{{ $nilai->tryout?->nama_tryout ?? 'Tryout Dihapus' }}</td>
-                                                <td>{{ $nilai->tryout?->tahunPelajaran?->nama_tahun_pelajaran ?? 'N/A' }}
-                                                </td>
-                                                <td>{{ $nilai->tryout?->tahunPelajaran?->semester ?? 'N/A' }}</td>
-                                                <td>{{ number_format($nilai->nilai, 2) }}</td>
-                                                <td>
-                                                    <button class="btn btn-warning edit-button"
-                                                        data-id="{{ $nilai->id }}" data-nilai="{{ $nilai->nilai }}"><i
-                                                            class="fa fa-pencil"></i> Edit</button>
-                                                    <button class="btn btn-danger delete-button"
-                                                        data-id="{{ $nilai->id }}"><i class="fa fa-trash"></i>
-                                                        Hapus</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        @if ($siswa->nilais->isEmpty())
-                                            <tr>
-                                                <td colspan="6" class="text-center">Data tidak ditemukan</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group mb-0">
+                    <label for="tryout_id" class="font-weight-600">Filter Berdasarkan Try Out</label>
+                    <select class="form-control" id="tryout_id" name="tryout_id">
+                        <option value="">-- Semua Try Out --</option>
+                        @foreach ($tryouts as $tryout)
+                            <option value="{{ $tryout->id }}" {{ $tryout->id == $tryoutId ? 'selected' : '' }}>
+                                {{ $tryout->nama_tryout }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <button type="submit" class="btn-modern btn-modern-primary" style="height: 42px; padding: 0 24px;">
+                        <i class="fa-solid fa-filter"></i>
+                        <span>Terapkan Filter</span>
+                    </button>
                 </div>
             </div>
+        </form>
+    </div>
+
+    <!-- Score Detail Table -->
+    <div class="table-wrap">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="60" class="text-center">No</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Try Out</th>
+                        <th>Tahun Pelajaran</th>
+                        <th class="text-center">Semester</th>
+                        <th class="text-center">Nilai</th>
+                        <th width="120" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($siswa->nilais as $index => $nilai)
+                    <tr>
+                        <td class="text-center font-weight-600">{{ $index + 1 }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-10">
+                                <span class="badge-modern primary"><i class="fa-solid fa-book-open"></i></span>
+                                <span class="font-weight-600 color-primary">{{ $nilai->mataPelajaran?->namaMataPelajaran ?? 'Mapel Dihapus' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-modern success">
+                                <i class="fa-solid fa-flag-checkered mr-5"></i>{{ $nilai->tryout?->nama_tryout ?? 'Tryout Dihapus' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-muted font-weight-600">{{ $nilai->tryout?->tahunPelajaran?->nama_tahun_pelajaran ?? '-' }}</span>
+                        </td>
+                        <td class="text-center">
+                            <code style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 6px; font-weight: 700;">Semester {{ $nilai->tryout?->tahunPelajaran?->semester ?? '-' }}</code>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge-modern primary" style="font-size: 14px; font-weight: 700; padding: 6px 14px;">
+                                {{ number_format($nilai->nilai, 2) }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="action-btn-group justify-content-center">
+                                <a href="#" class="btn-action btn-action-edit edit-button" 
+                                   data-id="{{ $nilai->id }}" 
+                                   data-nilai="{{ $nilai->nilai }}"
+                                   data-toggle="tooltip" 
+                                   title="Edit Nilai"> 
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a> 
+                                <a href="#" class="btn-action btn-action-delete delete-button" 
+                                   data-id="{{ $nilai->id }}" 
+                                   data-toggle="tooltip" 
+                                   title="Hapus Nilai"> 
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-chart-bar fa-2x mb-2"></i>
+                                <p>Belum ada data nilai untuk siswa ini.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-    <!-- /Row -->
+</div>
 
-    <!-- Modal Edit Data -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+<!-- Modal Edit Data Nilai -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="editForm" action="" method="POST">
+                @csrf
+                @method('POST')
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h5 class="modal-title" id="editModalLabel">Edit Data Mata Pelajaran</h5>
+                    <h5 class="modal-title" id="editModalLabel"><i class="fa-solid fa-pen-to-square mr-8 text-primary"></i> Edit Data Nilai</h5>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm" action="" method="POST">
-                        @csrf
-                        @method('POST')
-                        <div class="form-group">
-                            <label for="editNilai">Nilai</label>
-                            <input type="text" class="form-control" id="editNilai" name="nilai" placeholder="Nilai"
-                                required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-orange">Simpan</button>
-                        </div>
-                    </form>
+                    <div class="form-group mb-0">
+                        <label for="editNilai">Skor / Nilai Siswa</label>
+                        <input type="number" step="0.01" min="0" max="1000" class="form-control" id="editNilai" name="nilai" placeholder="Masukkan Skor Nilai" required>
+                    </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-modern btn-modern-primary">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    @if (session('success'))
-        <script>
-            $(document).ready(function() {
-                setTimeout(function() {
-                    swal({
-                        title: "Success!",
-                        text: "{{ session('success') }}",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                }, 1000);
+@if (session('success'))
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            swal({
+                title: "Berhasil!",
+                text: "{{ session('success') }}",
+                type: "success",
+                confirmButtonText: "OK"
             });
-        </script>
-    @endif
+        }, 500);
+    });
+</script>
+@endif
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            var filterApplied = new URLSearchParams(window.location.search).has('tahun_pelajaran_id') &&
-                new URLSearchParams(window.location.search).has('tryout_id');
-            $('#tahun_pelajaran_id').change(function() {
-                var tahunPelajaranId = $(this).val();
-                if (tahunPelajaranId) {
-                    $.ajax({
-                        url: '/admin/nilai/getTryouts', // Pastikan rute ini sesuai dengan yang ada di web.php
-                        type: 'GET',
-                        data: {
-                            tahun_pelajaran_id: tahunPelajaranId
-                        },
-                        dataType: 'json',
-                        success: function(data) {
-                            $('#tryout_id').empty();
-                            $('#tryout_id').append('<option value="">Pilih Tryout</option>');
-                            $.each(data, function(key, value) {
-                                $('#tryout_id').append('<option value="' + key + '">' +
-                                    value + '</option>');
-                            });
-                        }
-                    });
-                } else {
-                    $('#tryout_id').empty();
-                    $('#tryout_id').append('<option value="">Pilih Tryout</option>');
-                }
-            });
+<script>
+    $(document).ready(function() {
+        var filterApplied = new URLSearchParams(window.location.search).has('tahun_pelajaran_id') &&
+            new URLSearchParams(window.location.search).has('tryout_id');
 
-            $('#downloadSertifikat').click(function(e) {
-                var tahunPelajaranId = $('#tahun_pelajaran_id').val();
-                var tryoutId = $('#tryout_id').val();
-                if (!tahunPelajaranId || !tryoutId) {
-                    e.preventDefault();
-                    alert('Silakan pilih Tahun Pelajaran dan Try Out terlebih dahulu.');
-                } else if (!filterApplied) {
-                    e.preventDefault();
-                    alert('Silakan klik tombol Filter terlebih dahulu.');
-                } else {
-                    var url =
-                        "{{ route('admin.nilai.downloadSertifikat', ['id' => $siswa->id, 'tahun_pelajaran_id' => '__tahun_pelajaran_id__', 'tryout_id' => '__tryout_id__']) }}";
-                    url = url.replace('__tahun_pelajaran_id__', tahunPelajaranId).replace('__tryout_id__',
-                        tryoutId);
-                    window.location.href = url;
-                }
-            });
-
-            $('.delete-button').on('click', function(e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                swal({
-                    title: "Are you sure?",
-                    text: "You will not be able to recover this data!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#f83f37",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, cancel plx!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                }, function(isConfirm) {
-                    if (isConfirm) {
-                        $.ajax({
-                            url: '/admin/nilai-detail/' + id,
-                            type: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                            },
-                            success: function(result) {
-                                swal({
-                                    title: "Deleted!",
-                                    text: result.success,
-                                    type: "success",
-                                    confirmButtonText: "OK"
-                                }, function() {
-                                    location.reload();
-                                });
-                            },
-                            error: function() {
-                                swal("Error!", "There was an error deleting the data.",
-                                    "error");
-                            }
+        $('#tahun_pelajaran_id').change(function() {
+            var tahunPelajaranId = $(this).val();
+            if (tahunPelajaranId) {
+                $.ajax({
+                    url: '/admin/nilai/getTryouts',
+                    type: 'GET',
+                    data: {
+                        tahun_pelajaran_id: tahunPelajaranId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#tryout_id').empty();
+                        $('#tryout_id').append('<option value="">-- Pilih Try Out --</option>');
+                        $.each(data, function(key, value) {
+                            $('#tryout_id').append('<option value="' + key + '">' + value + '</option>');
                         });
-                    } else {
-                        swal("Cancelled", "Your data is safe :)", "error");
                     }
                 });
-            });
-
-            // Edit Button Click
-            $('.edit-button').on('click', function() {
-                var id = $(this).data('id');
-                var nilai = $(this).data('nilai');
-                $('#editNilai').val(nilai);
-                $('#editForm').attr('action', '/admin/nilai/' + id);
-                $('#editModal').modal('show');
-            });
-
+            } else {
+                $('#tryout_id').empty().append('<option value="">-- Pilih Try Out --</option>');
+            }
         });
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var ctx = document.getElementById('nilaiChart').getContext('2d');
-            var nilaiChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {!! json_encode($siswa->nilais->pluck('tryout.nama_tryout')) !!},
-                    datasets: [{
-                        label: 'Nilai Tryout',
-                        data: {!! json_encode($siswa->nilais->pluck('nilai')) !!},
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        $('#downloadSertifikat').click(function(e) {
+            var tahunPelajaranId = $('#tahun_pelajaran_id').val();
+            var tryoutId = $('#tryout_id').val();
+            if (!tahunPelajaranId || !tryoutId) {
+                e.preventDefault();
+                swal("Peringatan!", "Silakan pilih Try Out terlebih dahulu pada filter di atas.", "warning");
+            } else if (!filterApplied) {
+                e.preventDefault();
+                swal("Peringatan!", "Silakan klik tombol Filter terlebih dahulu untuk memuat data sertifikat.", "warning");
+            } else {
+                var url = "{{ route('admin.nilai.downloadSertifikat', ['id' => $siswa->id, 'tahun_pelajaran_id' => '__tahun_pelajaran_id__', 'tryout_id' => '__tryout_id__']) }}";
+                url = url.replace('__tahun_pelajaran_id__', tahunPelajaranId).replace('__tryout_id__', tryoutId);
+                window.location.href = url;
+            }
+        });
+
+        $('.delete-button').on('click', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            swal({
+                title: "Apakah Anda Yakin?",
+                text: "Data nilai mata pelajaran ini akan dihapus dari record siswa!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#ef4444",
+                confirmButtonText: "Ya, Hapus!",
+                cancelButtonText: "Batal",
+                closeOnConfirm: false
+            }, function(isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: '/admin/nilai-detail/' + id,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(result) {
+                            swal({
+                                title: "Terhapus!",
+                                text: result.success || "Nilai mata pelajaran berhasil dihapus.",
+                                type: "success",
+                                confirmButtonText: "OK"
+                            }, function() {
+                                location.reload();
+                            });
+                        },
+                        error: function() {
+                            swal("Gagal!", "Terjadi kesalahan saat menghapus nilai.", "error");
                         }
-                    }
+                    });
                 }
             });
         });
-    </script>
 
+        $('.edit-button').on('click', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var nilai = $(this).data('nilai');
+            $('#editNilai').val(nilai);
+            $('#editForm').attr('action', '/admin/nilai/' + id);
+            $('#editModal').modal('show');
+        });
+    });
+</script>
 @endsection

@@ -3,7 +3,7 @@
 @section('title', 'Data Tahun Pelajaran')
 
 @section('content')
-<!-- Title -->
+<!-- Title Breadcrumb -->
 <div class="row heading-bg">
     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
         <h5 class="txt-dark">Data Tahun Pelajaran</h5>
@@ -16,117 +16,202 @@
         </ol>
     </div>
 </div>
-<!-- /Title -->
+<!-- /Title Breadcrumb -->
 
-<!-- Alert Info -->
-<div class="row">
-    <div class="col-sm-12">
-        <div class="alert alert-info alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="zmdi zmdi-info-outline pr-15 pull-left"></i><p class="pull-left">Mulai tahun pelajaran 2025/2026 pengolahan data pada sistem dilakukan dalam <strong>satu tahun pelajaran</strong> bukan per semester. Untuk tahun berjalan cukup menggunakan satu semester. Data pada halaman orang tua sudah otomatis disesuaikan berdasarkan satu tahun pelajaran berjalan / aktif.</p>
-            <div class="clearfix"></div>
-        </div>
+<!-- Alert Info Modern -->
+<div class="modern-info-card">
+    <div class="info-icon-box">
+        <i class="fa-solid fa-circle-info"></i>
     </div>
+    <div class="info-content">
+        Mulai tahun pelajaran 2025/2026 pengolahan data pada sistem dilakukan dalam <strong>satu tahun pelajaran</strong> bukan per semester. Untuk tahun berjalan cukup menggunakan satu semester. Data pada halaman orang tua sudah otomatis disesuaikan berdasarkan satu tahun pelajaran berjalan / aktif.
+    </div>
+    <button type="button" class="close-info-btn" title="Tutup Informasi">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
 </div>
-<!-- /Alert Info -->
+<!-- /Alert Info Modern -->
 
-<!-- Row -->
-<div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-default border-panel card-view">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-md-8 col-xs-6">
-                        <div class="btn-group">
-                            <div class="dropdown">
-                                <button aria-expanded="false" data-toggle="dropdown" class="btn btn-orange dropdown-toggle" type="button">
-                                    Menu <span class="caret"></span>
-                                </button>
-                                <ul role="menu" class="dropdown-menu">
-                                    <li><a href="#" data-toggle="modal" data-target="#addModal"><i class="fa fa-plus"></i> Tambah Data</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-xs-6 text-right">
-                        <form method="GET" action="{{ route('admin.tahun_pelajaran.index') }}">
-                            <div class="form-group">
-                                <div class="input-group mb-15">
-                                    <input type="text" id="search" name="search" class="form-control" placeholder="Cari Data..." value="{{ request('search') }}">
-                                    <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-orange btn-anim"><i class="icon-magnifier"></i><span class="btn-text">Cari</span></button>
-                                    </span> 
+<!-- Main Table Card -->
+<div class="modern-table-card">
+    <!-- Header Controls: Actions + Search -->
+    <div class="modern-table-header">
+        <div class="modern-table-actions">
+            <button type="button" class="btn-modern btn-modern-primary" data-toggle="modal" data-target="#addModal">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Tahun Pelajaran</span>
+            </button>
+        </div>
+        <form method="GET" action="{{ route('admin.tahun_pelajaran.index') }}" class="modern-search-bar">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="search" name="search" class="form-control" placeholder="Cari tahun pelajaran / semester..." value="{{ request('search') }}">
+        </form>
+    </div>
+
+    <!-- Table Responsive Wrapper -->
+    <div class="table-wrap">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="60" class="text-center">No</th>
+                        <th>Nama Tahun Pelajaran</th>
+                        <th width="140" class="text-center" style="white-space: nowrap;">Semester</th>
+                        <th width="120" class="text-center" style="white-space: nowrap;">Status</th>
+                        <th width="180" class="text-center" style="white-space: nowrap;">Statistik Data</th>
+                        <th width="100" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($tahunPelajarans as $index => $tahunPelajaran)
+                    <tr>
+                        <td class="text-center font-weight-600">{{ method_exists($tahunPelajarans, 'firstItem') && $tahunPelajarans->firstItem() ? $tahunPelajarans->firstItem() + $index : $index + 1 }}</td>
+                        <td>
+                            <div class="user-info-cell">
+                                <div class="user-avatar-placeholder">
+                                    <i class="fa-solid fa-calendar-days" style="color: #ffffff; font-size: 15px;"></i>
+                                </div>
+                                <div class="user-info-text">
+                                    <span class="user-name" style="font-size: 15px; font-weight: 700; color: #6366f1 !important;">{{ $tahunPelajaran->nama_tahun_pelajaran }}</span>
+                                    <span class="user-subtext">Tahun Pelajaran</span>
                                 </div>
                             </div>
-                        </form>
+                        </td>
+                        <td class="text-center" style="white-space: nowrap;">
+                            <span class="badge-modern neutral" style="white-space: nowrap; padding: 5px 12px; font-weight: 600;">
+                                <i class="fa-solid fa-clock-rotate-left mr-5"></i>Semester {{ $tahunPelajaran->semester }}
+                            </span>
+                        </td>
+                        <td class="text-center" style="white-space: nowrap;">
+                            @if($tahunPelajaran->status == 1)
+                                <span class="badge-modern success" style="white-space: nowrap;"><i class="fa-solid fa-circle-check"></i> Aktif</span>
+                            @else
+                                <span class="badge-modern danger" style="white-space: nowrap;"><i class="fa-solid fa-circle-xmark"></i> Nonaktif</span>
+                            @endif
+                        </td>
+                        <td class="text-center" style="white-space: nowrap;">
+                            <button type="button" class="btn-modern btn-modern-secondary stat-detail-btn" 
+                                    style="padding: 6px 14px; font-size: 12px; white-space: nowrap;"
+                                    data-nama="{{ $tahunPelajaran->nama_tahun_pelajaran }} (Semester {{ $tahunPelajaran->semester }})" 
+                                    data-siswa="{{ number_format($tahunPelajaran->jml_siswa) }}" 
+                                    data-kelas="{{ number_format($tahunPelajaran->jml_kelas) }}" 
+                                    data-absen-siswa="{{ number_format($tahunPelajaran->jml_absensi_siswa) }}" 
+                                    data-absen-guru="{{ number_format($tahunPelajaran->jml_absensi_guru) }}" 
+                                    data-nilai="{{ number_format($tahunPelajaran->jml_nilai) }}">
+                                <i class="fa-solid fa-chart-pie text-primary"></i>
+                                <span>Lihat Statistik</span>
+                            </button>
+                        </td>
+                        <td class="text-center">
+                            <div class="action-btn-group justify-content-center">
+                                <a href="#" class="btn-action btn-action-edit edit-button" 
+                                   data-toggle="tooltip" 
+                                   title="Edit Tahun Pelajaran" 
+                                   data-id="{{ $tahunPelajaran->id }}" 
+                                   data-nama="{{ $tahunPelajaran->nama_tahun_pelajaran }}" 
+                                   data-semester="{{ $tahunPelajaran->semester }}" 
+                                   data-status="{{ $tahunPelajaran->status }}"> 
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a> 
+                                <a href="#" class="btn-action btn-action-delete delete-button" 
+                                   data-id="{{ $tahunPelajaran->id }}" 
+                                   data-toggle="tooltip" 
+                                   title="Hapus Tahun Pelajaran"> 
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-calendar-days fa-2x mb-2"></i>
+                                <p>Belum ada data tahun pelajaran.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="modern-table-header border-top" style="border-bottom: none; background: #fafafa;">
+        <div class="text-muted small">
+            @if(method_exists($tahunPelajarans, 'total'))
+                Menampilkan {{ $tahunPelajarans->firstItem() ?? 0 }} - {{ $tahunPelajarans->lastItem() ?? 0 }} dari {{ $tahunPelajarans->total() }} data
+            @elseif(method_exists($tahunPelajarans, 'firstItem'))
+                Menampilkan Halaman {{ $tahunPelajarans->currentPage() }} ({{ $tahunPelajarans->firstItem() ?? 0 }} - {{ $tahunPelajarans->lastItem() ?? 0 }} data)
+            @elseif(is_countable($tahunPelajarans))
+                Total {{ count($tahunPelajarans) }} data
+            @endif
+        </div>
+        @if(method_exists($tahunPelajarans, 'links'))
+        <div>
+            {{ $tahunPelajarans->appends(['search' => request('search')])->links('vendor.pagination.custom') }}
+        </div>
+        @endif
+    </div>
+</div>
+
+<!-- Modal Detail Statistik Data -->
+<div class="modal fade" id="statModal" tabindex="-1" role="dialog" aria-labelledby="statModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h5 class="modal-title" id="statModalLabel">
+                    <i class="fa-solid fa-chart-pie mr-8 text-primary"></i> 
+                    Statistik Data <span id="statTahunPelajaranTitle" class="color-primary font-weight-700"></span>
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="stat-modal-grid">
+                    <div class="stat-mini-card gradient-1">
+                        <div class="stat-mini-icon"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-mini-text">
+                            <span class="stat-mini-label">Total Siswa Terdaftar</span>
+                            <h4 class="stat-mini-value" id="statValSiswa">0</h4>
+                        </div>
+                    </div>
+                    <div class="stat-mini-card gradient-2">
+                        <div class="stat-mini-icon"><i class="fa-solid fa-sitemap"></i></div>
+                        <div class="stat-mini-text">
+                            <span class="stat-mini-label">Total Kelompok / Kelas</span>
+                            <h4 class="stat-mini-value" id="statValKelas">0</h4>
+                        </div>
+                    </div>
+                    <div class="stat-mini-card gradient-3">
+                        <div class="stat-mini-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="stat-mini-text">
+                            <span class="stat-mini-label">Total Kehadiran Siswa</span>
+                            <h4 class="stat-mini-value" id="statValAbsenSiswa">0</h4>
+                        </div>
+                    </div>
+                    <div class="stat-mini-card gradient-4">
+                        <div class="stat-mini-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <div class="stat-mini-text">
+                            <span class="stat-mini-label">Total Absensi Guru</span>
+                            <h4 class="stat-mini-value" id="statValAbsenGuru">0</h4>
+                        </div>
+                    </div>
+                    <div class="stat-mini-card gradient-5">
+                        <div class="stat-mini-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="stat-mini-text">
+                            <span class="stat-mini-label">Total Record Nilai Siswa</span>
+                            <h4 class="stat-mini-value" id="statValNilai">0</h4>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="clearfix"></div>
-            <div class="panel-wrapper collapse in">
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Tahun Pelajaran</th>
-                                        <th>Semester</th>
-                                        <th>Status</th>
-                                        <th>Statistik Data</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($tahunPelajarans as $index => $tahunPelajaran)
-                                    <tr>
-                                        <td>{{ $tahunPelajarans->firstItem() + $index }}</td>
-                                        <td>{{ $tahunPelajaran->nama_tahun_pelajaran }}</td>
-                                        <td>{{ $tahunPelajaran->semester }}</td>
-                                        <td>
-                                            @if($tahunPelajaran->status == 1)
-                                                <span class="label label-success">Aktif</span>
-                                            @else
-                                                <span class="label label-danger">Nonaktif</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <span class="label label-primary" data-toggle="tooltip" title="Total Siswa"><i class="fa fa-users"></i> {{ $tahunPelajaran->jml_siswa }}</span>
-                                            <span class="label label-info" data-toggle="tooltip" title="Total Kelompok"><i class="fa fa-sitemap"></i> {{ $tahunPelajaran->jml_kelas }}</span>
-                                            <span class="label label-success" data-toggle="tooltip" title="Total Kehadiran Siswa"><i class="fa fa-check-square-o"></i> {{ $tahunPelajaran->jml_absensi_siswa }}</span>
-                                            <span class="label label-warning" data-toggle="tooltip" title="Total Absensi Guru"><i class="fa fa-calendar-check-o"></i> {{ $tahunPelajaran->jml_absensi_guru }}</span>
-                                            <span class="label label-danger" data-toggle="tooltip" title="Total Nilai"><i class="fa fa-line-chart"></i> {{ $tahunPelajaran->jml_nilai }}</span>
-                                        </td>
-                                        <td class="text-nowrap">
-                                            <a href="#" class="mr-25 edit-button" data-toggle="tooltip" data-original-title="Edit" data-id="{{ $tahunPelajaran->id }}" data-nama="{{ $tahunPelajaran->nama_tahun_pelajaran }}" data-semester="{{ $tahunPelajaran->semester }}" data-status="{{ $tahunPelajaran->status }}"> 
-                                                <i class="fa fa-pencil text-inverse m-r-10"></i> 
-                                            </a> 
-                                            <a href="#" class="delete-button" data-id="{{ $tahunPelajaran->id }}" data-toggle="tooltip" data-original-title="Delete"> 
-                                                <i class="fa fa-close text-danger"></i> 
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <nav class="pagination-wrap d-inline-block" aria-label="Page navigation example">
-                                {{ $tahunPelajarans->appends(['search' => request('search')])->links('vendor.pagination.custom') }}
-                            </nav>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modern btn-modern-secondary" data-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
-<!-- /Row -->
 
 <!-- Modal Tambah Data -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -136,24 +221,32 @@
                 @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h5 class="modal-title" id="addModalLabel">Tambah Data Tahun Pelajaran</h5>
+                    <h5 class="modal-title" id="addModalLabel"><i class="fa-solid fa-plus mr-8 text-primary"></i> Tambah Tahun Pelajaran</h5>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nama_tahun_pelajaran">Nama Tahun Pelajaran</label>
-                        <input type="text" class="form-control" id="nama_tahun_pelajaran" name="nama_tahun_pelajaran" placeholder="Nama Tahun Pelajaran" required>
+                        <input type="text" class="form-control" id="nama_tahun_pelajaran" name="nama_tahun_pelajaran" placeholder="Contoh: 2025/2026" required>
                     </div>
                     <div class="form-group">
                         <label for="semester">Semester</label>
-                        <select class="form-control" id="semester" name="semester" required>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
+                        <select name="semester" id="semester" class="form-control" required>
+                            <option value="">-- Pilih Semester --</option>
+                            <option value="Ganjil">Ganjil</option>
+                            <option value="Genap">Genap</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label for="status">Status</label>
+                        <select name="status" id="status" class="form-control" required>
+                            <option value="1">Aktif</option>
+                            <option value="0">Nonaktif</option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-orange">Simpan</button>
+                    <button type="button" class="btn-modern btn-modern-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-modern btn-modern-primary">Simpan Tahun Pelajaran</button>
                 </div>
             </form>
         </div>
@@ -169,31 +262,31 @@
                 @method('POST')
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h5 class="modal-title" id="editModalLabel">Edit Data Tahun Pelajaran</h5>
+                    <h5 class="modal-title" id="editModalLabel"><i class="fa-solid fa-pen-to-square mr-8 text-primary"></i> Edit Tahun Pelajaran</h5>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="editNamaTahunPelajaran">Nama Tahun Pelajaran</label>
-                        <input type="text" class="form-control" id="editNamaTahunPelajaran" name="nama_tahun_pelajaran" placeholder="Nama Tahun Pelajaran" required>
+                        <label for="editNama">Nama Tahun Pelajaran</label>
+                        <input type="text" class="form-control" id="editNama" name="nama_tahun_pelajaran" placeholder="Contoh: 2025/2026" required>
                     </div>
                     <div class="form-group">
                         <label for="editSemester">Semester</label>
-                        <select class="form-control" id="editSemester" name="semester" required>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
+                        <select name="semester" id="editSemester" class="form-control" required>
+                            <option value="Ganjil">Ganjil</option>
+                            <option value="Genap">Genap</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-0">
                         <label for="editStatus">Status</label>
-                        <select class="form-control" id="editStatus" name="status" required>
+                        <select name="status" id="editStatus" class="form-control" required>
                             <option value="1">Aktif</option>
                             <option value="0">Nonaktif</option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-orange">Simpan</button>
+                    <button type="button" class="btn-modern btn-modern-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn-modern btn-modern-primary">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -205,27 +298,56 @@
     $(document).ready(function() {
         setTimeout(function() {
             swal({
-                title: "Success!",
+                title: "Berhasil!",
                 text: "{{ session('success') }}",
                 type: "success",
                 confirmButtonText: "OK"
             });
-        }, 1000);
+        }, 500);
     });
 </script>
 @endif
 
 <script>
     $(document).ready(function() {
+        // Close info card handler
+        $('.close-info-btn').on('click', function(e) {
+            e.preventDefault();
+            $(this).closest('.modern-info-card').fadeOut(200, function() {
+                $(this).remove();
+            });
+        });
 
-        $('.edit-button').on('click', function() {
+        // Stat detail modal handler
+        $('.stat-detail-btn').on('click', function(e) {
+            e.preventDefault();
+            var nama = $(this).data('nama');
+            var siswa = $(this).data('siswa');
+            var kelas = $(this).data('kelas');
+            var absenSiswa = $(this).data('absen-siswa');
+            var absenGuru = $(this).data('absen-guru');
+            var nilai = $(this).data('nilai');
+
+            $('#statTahunPelajaranTitle').text(nama);
+            $('#statValSiswa').text(siswa);
+            $('#statValKelas').text(kelas);
+            $('#statValAbsenSiswa').text(absenSiswa);
+            $('#statValAbsenGuru').text(absenGuru);
+            $('#statValNilai').text(nilai);
+
+            $('#statModal').modal('show');
+        });
+
+        // Edit button handler
+        $('.edit-button').on('click', function(e) {
+            e.preventDefault();
             var id = $(this).data('id');
             var nama = $(this).data('nama');
             var semester = $(this).data('semester');
             var status = $(this).data('status');
 
             $('#editForm').attr('action', '/admin/tahun_pelajaran/' + id);
-            $('#editNamaTahunPelajaran').val(nama);
+            $('#editNama').val(nama);
             $('#editSemester').val(semester);
             $('#editStatus').val(status);
             $('#editModal').modal('show');
@@ -236,15 +358,14 @@
             e.preventDefault();
             var id = $(this).data('id');
             swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this data!",
+                title: "Apakah Anda Yakin?",
+                text: "Data tahun pelajaran ini akan dihapus permanen dari sistem!",
                 type: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#f83f37",
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, cancel plx!",
-                closeOnConfirm: false,
-                closeOnCancel: false
+                confirmButtonColor: "#ef4444",
+                confirmButtonText: "Ya, Hapus!",
+                cancelButtonText: "Batal",
+                closeOnConfirm: false
             }, function(isConfirm){
                 if (isConfirm) {
                     $.ajax({
@@ -255,8 +376,8 @@
                         },
                         success: function(result) {
                             swal({
-                                title: "Deleted!",
-                                text: result.success,
+                                title: "Terhapus!",
+                                text: result.success || "Data tahun pelajaran berhasil dihapus.",
                                 type: "success",
                                 confirmButtonText: "OK"
                             }, function() {
@@ -264,15 +385,12 @@
                             });
                         },
                         error: function() {
-                            swal("Error!", "There was an error deleting the data.", "error");
+                            swal("Gagal!", "Terjadi kesalahan saat menghapus data tahun pelajaran.", "error");
                         }
                     });
-                } else {
-                    swal("Cancelled", "Your data is safe :)", "error");
                 }
             });
         });
     });
 </script>
-
 @endsection

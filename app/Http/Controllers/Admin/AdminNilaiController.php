@@ -191,9 +191,16 @@ class AdminNilaiController extends Controller
     {
         try {
             // Mengambil siswa dengan nilai yang sesuai dengan tryout yang dipilih
-            $siswas = Siswa::with(['nilais' => function ($query) use ($request) {
+            $siswaQuery = Siswa::with(['nilais' => function ($query) use ($request) {
                 $query->where('tryout_id', $request->tryout_id);
-            }])->where('kelas_id', $request->kelas_id)->get();
+            }])->where('kelas_id', $request->kelas_id);
+
+            // Filter berdasarkan pencarian nama siswa jika ada
+            if ($request->filled('search')) {
+                $siswaQuery->where('nama_siswa', 'like', '%' . $request->search . '%');
+            }
+
+            $siswas = $siswaQuery->get();
 
             // Cek status kedinasan kelas
             $kelas = Kelas::find($request->kelas_id);

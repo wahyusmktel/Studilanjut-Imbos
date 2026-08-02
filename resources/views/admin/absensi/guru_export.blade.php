@@ -11,14 +11,14 @@
             <td colspan="6" style="font-weight: bold;">Laporan Absensi Kehadiran Guru</td>
         </tr>
         <tr>
-            <td colspan="6">Laporan data dari tanggal {{ \Carbon\Carbon::parse($start_date)->format('d-m-Y') }} sampai {{ \Carbon\Carbon::parse($end_date)->format('d-m-Y') }}</td>
+            <td colspan="6">Laporan data dari tanggal {{ $start_date ? \Carbon\Carbon::parse($start_date)->format('d-m-Y') : '-' }} sampai {{ $end_date ? \Carbon\Carbon::parse($end_date)->format('d-m-Y') : '-' }}</td>
         </tr>
         @if($guru)
             <tr>
-                <td colspan="6">Nama Guru: {{ $guru->nama }}</td>
+                <td colspan="6">Nama Guru: {{ $guru->nama ?? '-' }}</td>
             </tr>
             <tr>
-                <td colspan="6">Mata Pelajaran: {{ $guru->mataPelajaran->namaMataPelajaran }}</td>
+                <td colspan="6">Mata Pelajaran: {{ $guru->mataPelajaran?->namaMataPelajaran ?? '-' }}</td>
             </tr>
         @endif
         <tr>
@@ -30,18 +30,16 @@
             <th>Mata Pelajaran</th>
             <th>Kelompok</th>
             <th>Tanggal</th>
-            {{-- <th>Waktu</th> --}}
             <th>Catatan</th>
         </tr>
         @foreach($absensiData as $index => $absensi)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $absensi->guru->nama }}</td>
-                <td>{{ $absensi->guru->mataPelajaran->namaMataPelajaran }}</td>
-                <td>{{ $absensi->kelas->nama_kelas }}</td>
-                <td>{{ \Carbon\Carbon::parse($absensi->tanggal)->format('d-m-Y') }}</td>
-                {{-- <td>{{ $absensi->waktu }}</td> --}}
-                <td>{{ $absensi->catatan }}</td>
+                <td>{{ $absensi->guru?->nama ?? '-' }}</td>
+                <td>{{ $absensi->guru?->mataPelajaran?->namaMataPelajaran ?? '-' }}</td>
+                <td>{{ $absensi->kelas?->nama_kelas ?? '-' }}</td>
+                <td>{{ $absensi->tanggal ? \Carbon\Carbon::parse($absensi->tanggal)->format('d-m-Y') : '-' }}</td>
+                <td>{{ $absensi->catatan ?? '-' }}</td>
             </tr>
         @endforeach
         <tr>
