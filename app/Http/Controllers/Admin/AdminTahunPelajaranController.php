@@ -50,6 +50,9 @@ class AdminTahunPelajaranController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->semester === 'Ganjil') $request->merge(['semester' => '1']);
+        if ($request->semester === 'Genap') $request->merge(['semester' => '2']);
+
         $data = $request->validate([
             'nama_tahun_pelajaran' => 'required|string|max:255',
             'semester' => 'required|in:1,2',
@@ -62,21 +65,6 @@ class AdminTahunPelajaranController extends Controller
         return redirect()->route('admin.tahun_pelajaran.index')->with('success', 'Data Tahun Pelajaran berhasil ditambahkan.');
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $tahunPelajaran = TahunPelajaran::findOrFail($id);
-
-    //     $data = $request->validate([
-    //         'nama_tahun_pelajaran' => 'required|string|max:255',
-    //         'semester' => 'required|in:1,2',
-    //         'status' => 'required|in:0,1',
-    //     ]);
-
-    //     $tahunPelajaran->update($data);
-
-    //     return redirect()->route('admin.tahun_pelajaran.index')->with('success', 'Data Tahun Pelajaran berhasil diupdate.');
-    // }
-
     public function update(Request $request, $id)
     {
         // Mulai transaksi
@@ -85,6 +73,9 @@ class AdminTahunPelajaranController extends Controller
         try {
             // Temukan tahun pelajaran yang akan diupdate
             $tahunPelajaran = TahunPelajaran::findOrFail($id);
+
+            if ($request->semester === 'Ganjil') $request->merge(['semester' => '1']);
+            if ($request->semester === 'Genap') $request->merge(['semester' => '2']);
 
             // Validasi data yang masuk
             $data = $request->validate([

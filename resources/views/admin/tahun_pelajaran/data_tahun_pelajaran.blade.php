@@ -232,8 +232,8 @@
                         <label for="semester">Semester</label>
                         <select name="semester" id="semester" class="form-control" required>
                             <option value="">-- Pilih Semester --</option>
-                            <option value="Ganjil">Ganjil</option>
-                            <option value="Genap">Genap</option>
+                            <option value="1">Semester 1 (Ganjil)</option>
+                            <option value="2">Semester 2 (Genap)</option>
                         </select>
                     </div>
                     <div class="form-group mb-0">
@@ -272,8 +272,8 @@
                     <div class="form-group">
                         <label for="editSemester">Semester</label>
                         <select name="semester" id="editSemester" class="form-control" required>
-                            <option value="Ganjil">Ganjil</option>
-                            <option value="Genap">Genap</option>
+                            <option value="1">Semester 1 (Ganjil)</option>
+                            <option value="2">Semester 2 (Genap)</option>
                         </select>
                     </div>
                     <div class="form-group mb-0">
