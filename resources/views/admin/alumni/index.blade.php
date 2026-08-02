@@ -20,88 +20,116 @@
     <!-- Row -->
     <div class="row">
         <div class="col-sm-12">
-            <div class="panel panel-default border-panel card-view">
-                <div class="panel-heading">
-                    <div class="pull-left">
-                        <h6 class="panel-title txt-dark">Alumni</h6>
-                    </div>
-                    <div class="pull-right">
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addAlumniModal">
-                            Tambah Alumni
+            <div class="modern-table-card">
+                <div class="modern-table-header">
+                    <div class="modern-table-actions">
+                        <button type="button" class="btn-modern btn-modern-primary" data-toggle="modal" data-target="#addAlumniModal">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Alumni</span>
                         </button>
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                            data-target="#importModal">
-                            Import Data Alumni
+                        <button type="button" class="btn-modern btn-modern-secondary" data-toggle="modal" data-target="#importModal">
+                            <i class="fa-solid fa-file-import"></i>
+                            <span>Import Data</span>
                         </button>
                     </div>
-                    <div class="clearfix"></div>
+                    <form method="GET" action="{{ route('admin.alumni.index') }}" class="modern-search-bar">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="search" name="search" class="form-control" placeholder="Cari nama alumni..." value="{{ request('search') }}">
+                    </form>
                 </div>
-                <div class="panel-wrapper collapse in">
-                    <div class="panel-body">
-                        <div class="table-wrap">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Alumni</th>
-                                            <th>Jenis Perguruan Tinggi</th>
-                                            <th>Nama Universitas</th>
-                                            <th>Foto</th>
-                                            <th>Tahun Lulusan</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($alumnis as $index => $alumni)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $alumni->nama_alumni }}</td>
-                                                <td>{{ $alumni->jenisPt->nama_jenis_pt ?? '-' }}</td>
-                                                <td>{{ $alumni->nama_universitas }}</td>
-                                                <td>
-                                                    @if ($alumni->foto)
-                                                        <img src="{{ asset('storage/' . $alumni->foto) }}"
-                                                            alt="{{ $alumni->nama_alumni }}"
-                                                            style="width: 50px; height: 50px;">
-                                                    @else
-                                                        Tidak ada foto
-                                                    @endif
-                                                </td>
-                                                <td>{{ $alumni->tahun_lulusan }}</td>
-                                                <td>{{ $alumni->status ? 'Aktif' : 'Tidak Aktif' }}</td>
-                                                <!-- Tombol Edit -->
-                                                <td>
-                                                    <button type="button" class="btn btn-primary btn-sm"
-                                                        data-toggle="modal" data-target="#editAlumniModal"
-                                                        data-id="{{ $alumni->id }}" data-nama="{{ $alumni->nama_alumni }}"
-                                                        data-jenis="{{ $alumni->jenis_perguruan_tinggi_id }}"
-                                                        data-universitas="{{ $alumni->nama_universitas }}"
-                                                        data-foto="{{ asset('storage/' . $alumni->foto) }}"
-                                                        data-tahun_lulusan="{{ $alumni->tahun_lulusan }}">
-                                                        <i class="fa fa-edit"></i> Edit
-                                                    </button>
-                                                    <button class="btn btn-danger btn-sm delete-alumni"
-                                                        data-id="{{ $alumni->id }}"><i class="fa fa-trash-o"></i>
-                                                        Hapus</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        @if ($alumnis->isEmpty())
-                                            <tr>
-                                                <td colspan="6" class="text-center">Data tidak ditemukan</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                <div class="table-wrap">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="60" class="text-center">No</th>
+                                    <th>Nama Alumni</th>
+                                    <th>Jenis PT</th>
+                                    <th>Universitas</th>
+                                    <th>Foto</th>
+                                    <th>Tahun Lulus</th>
+                                    <th>Status</th>
+                                    <th width="120" class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($alumnis as $index => $alumni)
+                                    <tr>
+                                        <td class="text-center font-weight-600">{{ method_exists($alumnis, 'firstItem') && $alumnis->firstItem() ? $alumnis->firstItem() + $index : $index + 1 }}</td>
+                                        <td style="font-weight: 500; color: var(--text-primary);">{{ $alumni->nama_alumni }}</td>
+                                        <td>
+                                            <span class="badge-modern primary">{{ $alumni->jenisPt->nama_jenis_pt ?? '-' }}</span>
+                                        </td>
+                                        <td>{{ $alumni->nama_universitas }}</td>
+                                        <td>
+                                            @if ($alumni->foto)
+                                                <img src="{{ asset('storage/' . $alumni->foto) }}"
+                                                    alt="{{ $alumni->nama_alumni }}"
+                                                    style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; box-shadow: var(--shadow-sm);">
+                                            @else
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-light); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                                    <i class="fa fa-user"></i>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td>{{ $alumni->tahun_lulusan }}</td>
+                                        <td>
+                                            @if($alumni->status)
+                                                <span class="badge-modern success">Aktif</span>
+                                            @else
+                                                <span class="badge-modern" style="background: #fee2e2; color: #ef4444;">Tidak Aktif</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="action-btn-group justify-content-center">
+                                                <a href="#" class="btn-action btn-action-edit"
+                                                    data-toggle="modal" data-target="#editAlumniModal"
+                                                    data-id="{{ $alumni->id }}" data-nama="{{ $alumni->nama_alumni }}"
+                                                    data-jenis="{{ $alumni->jenis_perguruan_tinggi_id }}"
+                                                    data-universitas="{{ $alumni->nama_universitas }}"
+                                                    data-foto="{{ asset('storage/' . $alumni->foto) }}"
+                                                    data-tahun_lulusan="{{ $alumni->tahun_lulusan }}" title="Edit">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </a>
+                                                <a href="#" class="btn-action btn-action-delete delete-alumni"
+                                                    data-id="{{ $alumni->id }}" title="Hapus">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($alumnis->isEmpty())
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4 text-muted">
+                                            <div class="empty-state" style="padding: 40px 20px; text-align: center;">
+                                                <i class="fa-solid fa-users fa-2x mb-2" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                                                <p style="color: var(--text-secondary); margin: 0;">Data alumni belum tersedia.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="pagination-wrapper">
-                        {{ $alumnis->links() }} <!-- Menampilkan tautan paginasi -->
+                </div>
+
+                <!-- Pagination Footer -->
+                <div class="modern-table-header border-top" style="border-bottom: none; background: #fafafa;">
+                    <div class="text-muted small">
+                        @if(method_exists($alumnis, 'total'))
+                            Menampilkan {{ $alumnis->firstItem() ?? 0 }} - {{ $alumnis->lastItem() ?? 0 }} dari {{ $alumnis->total() }} data
+                        @elseif(method_exists($alumnis, 'firstItem'))
+                            Menampilkan Halaman {{ $alumnis->currentPage() }} ({{ $alumnis->firstItem() ?? 0 }} - {{ $alumnis->lastItem() ?? 0 }} data)
+                        @elseif(is_countable($alumnis))
+                            Total {{ count($alumnis) }} data
+                        @endif
                     </div>
+                    @if(method_exists($alumnis, 'links'))
+                    <div>
+                        {{ $alumnis->appends(['search' => request('search')])->links('vendor.pagination.custom') }}
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

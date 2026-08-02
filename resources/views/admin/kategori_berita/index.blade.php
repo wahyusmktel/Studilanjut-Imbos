@@ -21,48 +21,67 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default border-panel card-view">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-8 col-xs-6">
-                            <h6 class="panel-title txt-dark">Kategori</h6>
-                        </div>
-                        <div class="col-md-4 col-xs-6 text-right">
-                            <button class="btn btn-success btn-sm mb-3" data-toggle="modal" data-target="#addModal"><i
-                                    class="fa fa-plus"></i> Tambah Kategori</button>
-                        </div>
+            <div class="modern-card modern-table-card">
+                <div class="modern-card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px;">
+                    <div>
+                        <h3 class="modern-card-title" style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary);">Data Kategori Berita</h3>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa fa-plus"></i> Tambah Kategori
+                        </button>
                     </div>
                 </div>
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
-                                <thead>
+                <div class="modern-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table modern-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th>Nama Kategori</th>
+                                    <th>Status</th>
+                                    <th style="width: 150px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($kategoriBeritas as $index => $kategori)
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama Kategori</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($kategoriBeritas as $index => $kategori)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $kategori->nama_kategori }}</td>
-                                            <td>{{ $kategori->status ? 'Aktif' : 'Non-Aktif' }}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm edit-kategori"
+                                        <td>{{ $index + 1 }}</td>
+                                        <td style="font-weight: 500; color: var(--text-primary);">{{ $kategori->nama_kategori }}</td>
+                                        <td>
+                                            @if($kategori->status)
+                                                <span class="badge-modern success">Aktif</span>
+                                            @else
+                                                <span class="badge-modern" style="background: #fee2e2; color: #ef4444;">Non-Aktif</span>
+                                            @endif
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div style="display: flex; justify-content: center; gap: 8px;">
+                                                <button class="btn btn-sm edit-kategori" style="background: #f1f5f9; color: var(--primary); border: none; border-radius: 6px; padding: 6px 10px;"
                                                     data-id="{{ $kategori->id }}" data-nama="{{ $kategori->nama_kategori }}"
-                                                    data-status="{{ $kategori->status }}">Edit</button>
-                                                <button class="btn btn-danger btn-sm delete-kategori"
-                                                    data-id="{{ $kategori->id }}">Hapus</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                                    data-status="{{ $kategori->status }}" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm delete-kategori" style="background: #fee2e2; color: var(--danger); border: none; border-radius: 6px; padding: 6px 10px;"
+                                                    data-id="{{ $kategori->id }}" title="Hapus">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($kategoriBeritas->isEmpty())
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="empty-state" style="padding: 40px 20px; text-align: center;">
+                                                <i class="fa fa-tags" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                                                <p style="color: var(--text-secondary); margin: 0;">Data kategori belum tersedia.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

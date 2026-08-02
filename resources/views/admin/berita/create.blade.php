@@ -21,53 +21,67 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default border-panel card-view">
-                <div class="panel-heading">
-
-                    <div class="row">
-                        <div class="col-md-8 col-xs-6">
-                            <h6 class="panel-title txt-dark">Tambah Berita</h6>
-                        </div>
-                        <div class="col-md-4 col-xs-6 text-right">
-                            <a href="/admin/berita" class="btn btn-default"><i
-                                class="fa fa-arrow-left"></i> Kembali</a>
-                        </div>
+            <div class="modern-card">
+                <div class="modern-card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px;">
+                    <div>
+                        <h3 class="modern-card-title" style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary);">Form Tambah Berita</h3>
                     </div>
-
+                    <div>
+                        <a href="/admin/berita" class="btn btn-outline-secondary btn-sm" style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa fa-arrow-left"></i> Kembali
+                        </a>
+                    </div>
                 </div>
 
-                <div class="panel-body">
+                <div class="modern-card-body">
                     <form action="{{ route('admin.berita.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group">
-                            <label for="judul_berita">Judul Berita</label>
-                            <input type="text" class="form-control" id="judul_berita" name="judul_berita" required>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label for="judul_berita" style="font-weight: 500; margin-bottom: 8px; display: block; color: var(--text-primary);">Judul Berita</label>
+                                    <input type="text" class="form-control" id="judul_berita" name="judul_berita" required style="border-radius: var(--radius-sm); border: 1px solid var(--border-color); padding: 10px 15px; box-shadow: none;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label for="isi_berita" style="font-weight: 500; margin-bottom: 8px; display: block; color: var(--text-primary);">Isi Berita</label>
+                                    <textarea class="form-control" id="isi_berita" name="isi_berita" rows="5" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 20px;">
+                                    <h5 style="margin-top: 0; margin-bottom: 16px; font-size: 14px; font-weight: 600; color: var(--text-primary); padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">Pengaturan Berita</h5>
+                                    
+                                    <div class="form-group" style="margin-bottom: 20px;">
+                                        <label for="kategori_id" style="font-weight: 500; margin-bottom: 8px; display: block; color: var(--text-primary);">Kategori</label>
+                                        <select class="form-control" id="kategori_id" name="kategori_id" required style="border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                                            @foreach ($kategoriBeritas as $kategori)
+                                                <option value="{{ $kategori->id }}">{{ $kategori->nama_kategori }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group" style="margin-bottom: 20px;">
+                                        <label for="foto" style="font-weight: 500; margin-bottom: 8px; display: block; color: var(--text-primary);">Foto Cover</label>
+                                        <input type="file" class="form-control" id="foto" name="foto" required style="border-radius: var(--radius-sm); border: 1px solid var(--border-color); padding: 6px 12px; height: auto;">
+                                    </div>
+                                    
+                                    <div class="form-group" style="margin-bottom: 20px;">
+                                        <label for="file" style="font-weight: 500; margin-bottom: 8px; display: block; color: var(--text-primary);">File Lampiran <span style="color: var(--text-muted); font-size: 12px; font-weight: normal;">(Optional)</span></label>
+                                        <input type="file" class="form-control" id="file" name="file" style="border-radius: var(--radius-sm); border: 1px solid var(--border-color); padding: 6px 12px; height: auto;">
+                                    </div>
+                                    
+                                    <div style="margin-top: 30px;">
+                                        <button type="submit" class="btn btn-primary btn-block" style="padding: 10px; border-radius: var(--radius-sm); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                            <i class="fa fa-save"></i> Simpan Berita
+                                        </button>
+                                        <a href="{{ route('admin.berita.index') }}" class="btn btn-default btn-block mt-2" style="border-radius: var(--radius-sm);">Batal</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="isi_berita">Isi Berita</label>
-                            <textarea class="form-control" id="isi_berita" name="isi_berita" rows="5" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="foto">Foto Cover</label>
-                            <input type="file" class="form-control" id="foto" name="foto" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="kategori_id">Kategori</label>
-                            <select class="form-control" id="kategori_id" name="kategori_id" required>
-                                @foreach ($kategoriBeritas as $kategori)
-                                    <option value="{{ $kategori->id }}">{{ $kategori->nama_kategori }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="file">File (optional)</label>
-                            <input type="file" class="form-control" id="file" name="file">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                        <a href="{{ route('admin.berita.index') }}" class="btn btn-secondary">Kembali</a>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>

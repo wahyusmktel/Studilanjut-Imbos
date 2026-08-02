@@ -18,69 +18,81 @@
     <!-- /Title -->
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default border-panel card-view">
-                <div class="panel-heading">
-
-                    <div class="row">
-                        <div class="col-md-8 col-xs-6">
-                            <h6 class="panel-title txt-dark">Data Komentar</h6>
-                        </div>
-                        {{-- <div class="col-md-4 col-xs-6 text-right">
-                            <a href="{{ route('admin.nilai-siswa.index') }}" class="btn btn-default"><i
-                                    class="fa fa-arrow-left"></i> Kembali</a>
-                        </div> --}}
+            <div class="modern-card modern-table-card">
+                <div class="modern-card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px;">
+                    <div>
+                        <h3 class="modern-card-title" style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary);">Data Komentar</h3>
                     </div>
-
                 </div>
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
-                                <thead>
+                <div class="modern-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table modern-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th>Judul Berita</th>
+                                    <th>Nama Komentator</th>
+                                    <th>Status</th>
+                                    <th>Tanggapan</th>
+                                    <th style="width: 250px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($komentars as $index => $komentar)
                                     <tr>
-                                        <th>No</th>
-                                        <th>Judul Berita</th>
-                                        <th>Nama Komentator</th>
-                                        {{-- <th>Isi Komentar</th> --}}
-                                        <th>Status</th>
-                                        <th>Tanggapan</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($komentars as $index => $komentar)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $komentar->berita->judul_berita }}</td>
-                                            <td>{{ $komentar->nama_komentator }}</td>
-                                            {{-- <td>{{ $komentar->isi_komentar }}</td> --}}
-                                            <td>{{ $komentar->status ? 'Aktif' : 'Tidak Aktif' }}</td>
-                                            <td>
-                                                @if ($komentar->tanggapan->isNotEmpty())
-                                                    <a
-                                                        href="{{ route('admin.tanggapan.index', ['komentar_id' => $komentar->id]) }}"><i class="fa fa-external-link"></i> Lihat
-                                                        Tanggapan</a>
-                                                @else
-                                                    Belum ada tanggapan
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <!-- Tombol Tanggapan -->
-                                                <button class="btn btn-primary btn-sm tanggapan-btn"
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td style="font-weight: 500; color: var(--text-primary);">{{ $komentar->berita->judul_berita }}</td>
+                                        <td>{{ $komentar->nama_komentator }}</td>
+                                        <td>
+                                            @if($komentar->status)
+                                                <span class="badge-modern success">Aktif</span>
+                                            @else
+                                                <span class="badge-modern" style="background: #fee2e2; color: #ef4444;">Tidak Aktif</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($komentar->tanggapan->isNotEmpty())
+                                                <a href="{{ route('admin.tanggapan.index', ['komentar_id' => $komentar->id]) }}" style="color: var(--primary); font-weight: 500;">
+                                                    <i class="fa fa-external-link"></i> Lihat Tanggapan
+                                                </a>
+                                            @else
+                                                <span style="color: var(--text-muted); font-size: 13px;">Belum ada tanggapan</span>
+                                            @endif
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div style="display: flex; justify-content: center; gap: 8px;">
+                                                <button class="btn btn-sm tanggapan-btn" style="background: #eef2ff; color: var(--primary); border: none; border-radius: 6px; padding: 6px 10px;"
                                                     data-id="{{ $komentar->id }}" data-toggle="modal"
-                                                    data-target="#tanggapanModal"><i class="fa fa-wechat"></i> Tanggapan</button>
-                                                <button class="btn btn-info btn-sm detail-btn" data-id="{{ $komentar->id }}"
+                                                    data-target="#tanggapanModal" title="Tanggapan">
+                                                    <i class="fa fa-reply"></i>
+                                                </button>
+                                                <button class="btn btn-sm detail-btn" style="background: #f1f5f9; color: var(--text-secondary); border: none; border-radius: 6px; padding: 6px 10px;"
+                                                    data-id="{{ $komentar->id }}"
                                                     data-nama="{{ $komentar->nama_komentator }}"
                                                     data-isi="{{ $komentar->isi_komentar }}" data-toggle="modal"
-                                                    data-target="#detailModal"><i class="fa fa-info-circle"></i> Detail</button>
-                                                <button class="btn btn-danger btn-sm delete-komentar"
-                                                    data-id="{{ $komentar->id }}"><i class="fa fa-trash"></i> Hapus</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                                    data-target="#detailModal" title="Detail">
+                                                    <i class="fa fa-info-circle"></i>
+                                                </button>
+                                                <button class="btn btn-sm delete-komentar" style="background: #fee2e2; color: var(--danger); border: none; border-radius: 6px; padding: 6px 10px;"
+                                                    data-id="{{ $komentar->id }}" title="Hapus">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($komentars->isEmpty())
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state" style="padding: 40px 20px; text-align: center;">
+                                                <i class="fa fa-comments-o" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                                                <p style="color: var(--text-secondary); margin: 0;">Data komentar belum tersedia.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -224,5 +224,8 @@ Route::prefix('admin')->group(function () {
         //Profile Admin
         Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
         Route::post('/profile', [AdminProfileController::class, 'updateProfile'])->name('admin.profile.update');
+
+        // Changelog
+        Route::view('/changelog', 'admin.changelog.index')->name('admin.changelog.index');
     });
 });

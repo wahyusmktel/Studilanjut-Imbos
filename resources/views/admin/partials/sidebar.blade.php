@@ -151,6 +151,16 @@
                     </li>
                 </ul>
             </li>
+            
+            <li class="sidebar-menu-label">System</li>
+            
+            <!-- Changelog -->
+            <li class="sidebar-menu-item {{ Request::is('admin/changelog') ? 'active' : '' }}">
+                <a href="/admin/changelog" class="sidebar-menu-link {{ Request::is('admin/changelog') ? 'active' : '' }}" title="Change Log">
+                    <i class="fa-solid fa-history sidebar-menu-icon"></i>
+                    <span class="sidebar-menu-text">Change Log</span>
+                </a>
+            </li>
         </ul>
     </nav>
 </aside>

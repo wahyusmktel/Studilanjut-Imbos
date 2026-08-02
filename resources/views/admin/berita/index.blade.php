@@ -19,58 +19,73 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default border-panel card-view">
-
-                <div class="panel-heading">
-
-                    <div class="row">
-                        <div class="col-md-8 col-xs-6">
-                            <h6 class="panel-title txt-dark">Daftar Berita</h6>
-                        </div>
-                        <div class="col-md-4 col-xs-6 text-right">
-                            <a href="{{ route('admin.berita.create') }}" class="btn btn-success mb-3 btn-sm"><i class="fa fa-plus"></i> Tambah Berita</a>
-                        </div>
+            <div class="modern-card modern-table-card">
+                <div class="modern-card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px;">
+                    <div>
+                        <h3 class="modern-card-title" style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary);">Daftar Berita</h3>
                     </div>
-
+                    <div>
+                        <a href="{{ route('admin.berita.create') }}" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa fa-plus"></i> Tambah Berita
+                        </a>
+                    </div>
                 </div>
-
-                <div class="panel-body">
-                    <div class="table-wrap">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
-                                <thead>
+                <div class="modern-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table modern-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th>Judul Berita</th>
+                                    <th>Kategori</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th style="width: 150px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($beritas as $index => $berita)
                                     <tr>
-                                        <th>No</th>
-                                        <th>Judul Berita</th>
-                                        <th>Kategori</th>
-                                        <th>Author</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            <div style="font-weight: 500; color: var(--text-primary); margin-bottom: 4px;">{{ $berita->judul_berita }}</div>
+                                            <div style="font-size: 12px; color: var(--text-muted);">{{ \Carbon\Carbon::parse($berita->created_at)->format('d M Y') }}</div>
+                                        </td>
+                                        <td><span class="badge-modern primary">{{ $berita->kategori->nama_kategori ?? 'Umum' }}</span></td>
+                                        <td>{{ $berita->author->name }}</td>
+                                        <td>
+                                            @if($berita->status)
+                                                <span class="badge-modern success">Aktif</span>
+                                            @else
+                                                <span class="badge-modern" style="background: #fee2e2; color: #ef4444;">Tidak Aktif</span>
+                                            @endif
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div style="display: flex; justify-content: center; gap: 8px;">
+                                                <a href="{{ route('admin.berita.edit', $berita->id) }}" class="btn btn-sm" style="background: #f1f5f9; color: var(--primary); border: none; border-radius: 6px; padding: 6px 10px;" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <button class="btn btn-sm delete-berita" style="background: #fee2e2; color: var(--danger); border: none; border-radius: 6px; padding: 6px 10px;" data-id="{{ $berita->id }}" title="Hapus">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($beritas as $index => $berita)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $berita->judul_berita }}</td>
-                                            <td>{{ $berita->kategori->nama_kategori }}</td>
-                                            <td>{{ $berita->author->name }}</td>
-                                            <td>{{ $berita->status ? 'Aktif' : 'Tidak Aktif' }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.berita.edit', $berita->id) }}"
-                                                    class="btn btn-warning btn-sm">Edit</a>
-                                                <button class="btn btn-danger btn-sm delete-berita"
-                                                    data-id="{{ $berita->id }}">Hapus</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-
-                        </div>
+                                @endforeach
+                                @if ($beritas->isEmpty())
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state" style="padding: 40px 20px; text-align: center;">
+                                                <i class="fa fa-newspaper-o" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                                                <p style="color: var(--text-secondary); margin: 0;">Data berita belum tersedia.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

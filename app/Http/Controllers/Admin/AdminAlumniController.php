@@ -23,7 +23,7 @@ class AdminAlumniController extends Controller
             $query->where('nama_alumni', 'like', '%' . $search . '%');
         }
 
-        $alumnis = $query->simplePaginate(10)->appends(['search' => $request->input('search')]);
+        $alumnis = $query->paginate(10)->appends(['search' => $request->input('search')]);
         $jenisPts = JenisPt::all();
         return view('admin.alumni.index', compact('alumnis', 'jenisPts'));
     }

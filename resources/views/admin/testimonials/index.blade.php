@@ -17,58 +17,82 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <div class="panel panel-default card-view">
-                <div class="panel-heading">
-                    <div class="pull-left">
-                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#addModal">
+            <div class="modern-card modern-table-card">
+                <div class="modern-card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px;">
+                    <div>
+                        <h3 class="modern-card-title" style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary);">Daftar Testimonial</h3>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" style="display: flex; align-items: center; gap: 8px;">
                             <i class="fa fa-plus"></i> Tambah Testimonial
                         </button>
                     </div>
-                    <div class="clearfix"></div>
                 </div>
-                <div class="panel-wrapper collapse in">
-                    <div class="panel-body">
-                        <div class="table-wrap">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Alumni</th>
-                                            <th>Rating</th>
-                                            <th>Isi Testimonial</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($testimonials as $index => $testimonial)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $testimonial->alumni->nama_alumni }}</td>
-                                                <td>{{ $testimonial->rating }}</td>
-                                                <td>{{ $testimonial->isi_testimonial }}</td>
-                                                <td>{{ $testimonial->status ? 'Aktif' : 'Nonaktif' }}</td>
-                                                <td>
-                                                    <button class="btn btn-primary btn-sm edit-testimonial"
-                                                        data-id="{{ $testimonial->id }}"
-                                                        data-alumni_id="{{ $testimonial->alumni_id }}"
-                                                        data-rating="{{ $testimonial->rating }}"
-                                                        data-isi_testimonial="{{ $testimonial->isi_testimonial }}"><i class="fa fa-edit"></i> Edit</button>
-                                                    <button class="btn btn-danger btn-sm delete-testimonial"
-                                                        data-id="{{ $testimonial->id }}"><i class="fa fa-trash"></i> Hapus</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        @if ($testimonials->isEmpty())
-                                            <tr>
-                                                <td colspan="6" class="text-center">Data tidak ditemukan</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                <div class="modern-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table modern-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th>Nama Alumni</th>
+                                    <th>Rating</th>
+                                    <th>Isi Testimonial</th>
+                                    <th>Status</th>
+                                    <th style="width: 150px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($testimonials as $index => $testimonial)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td style="font-weight: 500; color: var(--text-primary);">{{ $testimonial->alumni->nama_alumni }}</td>
+                                        <td>
+                                            <div style="color: #f59e0b; display: flex; gap: 2px;">
+                                                @for($i=0; $i<$testimonial->rating; $i++)
+                                                    <i class="fa fa-star"></i>
+                                                @endfor
+                                                @for($i=$testimonial->rating; $i<5; $i++)
+                                                    <i class="fa fa-star-o"></i>
+                                                @endfor
+                                            </div>
+                                        </td>
+                                        <td><div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $testimonial->isi_testimonial }}">{{ $testimonial->isi_testimonial }}</div></td>
+                                        <td>
+                                            @if($testimonial->status)
+                                                <span class="badge-modern success">Aktif</span>
+                                            @else
+                                                <span class="badge-modern" style="background: #fee2e2; color: #ef4444;">Nonaktif</span>
+                                            @endif
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div style="display: flex; justify-content: center; gap: 8px;">
+                                                <button class="btn btn-sm edit-testimonial" style="background: #f1f5f9; color: var(--primary); border: none; border-radius: 6px; padding: 6px 10px;"
+                                                    data-id="{{ $testimonial->id }}"
+                                                    data-alumni_id="{{ $testimonial->alumni_id }}"
+                                                    data-rating="{{ $testimonial->rating }}"
+                                                    data-isi_testimonial="{{ $testimonial->isi_testimonial }}" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm delete-testimonial" style="background: #fee2e2; color: var(--danger); border: none; border-radius: 6px; padding: 6px 10px;"
+                                                    data-id="{{ $testimonial->id }}" title="Hapus">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($testimonials->isEmpty())
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state" style="padding: 40px 20px; text-align: center;">
+                                                <i class="fa fa-commenting-o" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                                                <p style="color: var(--text-secondary); margin: 0;">Data testimonial belum tersedia.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
