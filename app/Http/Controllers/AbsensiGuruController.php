@@ -98,4 +98,27 @@ class AbsensiGuruController extends Controller
 
         return redirect()->back()->with('success', 'Foto sampul berhasil diupdate.');
     }
+
+    public function uploadFotoProfil(Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+        ]);
+
+        $guru = Auth::guard('guru')->user();
+        $guru = Guru::find($guru->id);
+
+        if ($request->hasFile('foto')) {
+            // Hapus foto profil lama jika ada
+            if ($guru->foto && Storage::disk('public')->exists($guru->foto)) {
+                Storage::disk('public')->delete($guru->foto);
+            }
+
+            $fotoPath = $request->file('foto')->store('fotos', 'public');
+            $guru->foto = $fotoPath;
+            $guru->save();
+        }
+
+        return redirect()->back()->with('success', 'Foto profil berhasil diupdate.');
+    }
 }

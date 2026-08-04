@@ -39,7 +39,7 @@ Route::get('/', [HomeController::class, 'index']);
 
 // Route untuk login guru
 Route::get('/login-guru', [GuruAuthController::class, 'showLoginForm'])->name('guru.login');
-Route::post('/login-guru', [GuruAuthController::class, 'login'])->name('guru.login.submit');
+Route::post('/login-guru', [GuruAuthController::class, 'login'])->middleware('throttle:6,1')->name('guru.login.submit');
 Route::post('/logout-guru', [GuruAuthController::class, 'logout'])->name('guru.logout');
 Route::get('/validasi-sertifikat/{no_sertifikat}', [SertifikatController::class, 'validasiSertifikat'])->name('validasi.sertifikat');
 
@@ -47,13 +47,14 @@ Route::get('/validasi-sertifikat/{no_sertifikat}', [SertifikatController::class,
 Route::middleware('guru')->group(function () {
     Route::get('/absensi', [AbsensiGuruController::class, 'index'])->name('absensi.index');
     Route::post('/upload-foto-sampul', [AbsensiGuruController::class, 'uploadFotoSampul'])->name('guru.uploadFotoSampul');
+    Route::post('/upload-foto-profil', [AbsensiGuruController::class, 'uploadFotoProfil'])->name('guru.uploadFotoProfil');
     Route::post('/absensi', [AbsensiGuruController::class, 'store'])->name('absensi.store');
     Route::get('/absensi/get-siswa', [AbsensiGuruController::class, 'getSiswaByKelas'])->name('absensi.get-siswa');
 });
 
 // Routes untuk login orang tua
 Route::get('/orang-tua', [OrangTuaController::class, 'showLoginForm'])->name('parent.login');
-Route::post('/orang-tua', [OrangTuaController::class, 'login'])->name('parent.login.submit');
+Route::post('/orang-tua', [OrangTuaController::class, 'login'])->middleware('throttle:6,1')->name('parent.login.submit');
 Route::post('/logout-orang-tua', [OrangTuaController::class, 'logout'])->name('parent.logout');
 
 Route::prefix('orang-tua')->group(function () {
@@ -75,7 +76,7 @@ Route::get('/tracking-alumni/{id}', [TrackAlumniController::class, 'show'])->nam
 //Halaman Berita
 Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
 Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.detail');
-Route::post('/komentar', [BeritaController::class, 'storeKomentar'])->name('komentar.store');
+Route::post('/komentar', [BeritaController::class, 'storeKomentar'])->middleware('throttle:10,1')->name('komentar.store');
 // Route untuk pencarian berita
 Route::get('/search', [InfoController::class, 'search'])->name('berita.search');
 // Route untuk menampilkan berita berdasarkan kategori
@@ -92,7 +93,7 @@ Route::get('/tryout', [TryOutController::class, 'index'])->name('tryout.index');
 
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login.submit');
+    Route::post('/login', [AdminLoginController::class, 'login'])->middleware('throttle:6,1')->name('admin.login.submit');
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
     Route::middleware(['admin'])->group(function () {

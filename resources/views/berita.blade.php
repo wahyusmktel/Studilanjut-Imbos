@@ -117,8 +117,12 @@
                 @foreach ($beritas as $berita)
                     <div class="col-xl-4 col-md-6">
                         <div class="post-item position-relative h-100" data-aos="fade-up" data-aos-delay="100">
-                            <div class="post-img position-relative overflow-hidden">
-                                <img src="{{ asset('storage/' . $berita->foto) }}" class="img-fluid" alt="">
+                            <div class="post-img position-relative overflow-hidden" style="height: 240px;">
+                                @if ($berita->foto)
+                                    <img src="{{ asset('storage/' . $berita->foto) }}" class="img-fluid w-100 h-100" style="object-fit: cover; object-position: center;" alt="{{ $berita->judul_berita }}" onerror="this.onerror=null;this.src='{{ asset('halaman_umum/assets/img/no-images.png') }}';">
+                                @else
+                                    <img src="{{ asset('halaman_umum/assets/img/no-images.png') }}" class="img-fluid w-100 h-100" style="object-fit: cover; object-position: center;" alt="{{ $berita->judul_berita }}">
+                                @endif
                                 <span class="post-date">{{ $berita->created_at->format('F d') }}</span>
                             </div>
                             <div class="post-content d-flex flex-column">

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\RedirectIfNotAdmin;
 use App\Http\Middleware\RedirectIfNotGuru;
 use App\Http\Middleware\ParentMiddleware;
+use App\Http\Middleware\SecurityHeaders;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [
+            SecurityHeaders::class,
+        ]);
         $middleware->alias([
             'admin' => RedirectIfNotAdmin::class,
             'guru' => RedirectIfNotGuru::class,
@@ -24,5 +28,3 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
-
-

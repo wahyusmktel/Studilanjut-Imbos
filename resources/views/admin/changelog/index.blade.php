@@ -28,6 +28,36 @@
                         <!-- Timeline Line -->
                         <div style="position: absolute; top: 0; bottom: 0; left: 11px; width: 2px; background: #e2e8f0; z-index: 1;"></div>
 
+                        <!-- Update Item Version 2.1.0 -->
+                        <div style="position: relative; margin-bottom: 40px; z-index: 2;">
+                            <div style="position: absolute; left: -26px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: #0d9488; border: 3px solid #fff; box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.4);"></div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <h4 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary);">v2.1.0 - Redesain UI/UX Frontend, Security Hardening & SEO Optimization</h4>
+                                    <div style="margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <span class="badge-modern primary">UI/UX Redesign</span>
+                                        <span class="badge-modern success">Keamanan</span>
+                                        <span class="badge-modern" style="background: #e0f2fe; color: #0284c7;">SEO & Performance</span>
+                                    </div>
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">
+                                    <i class="fa fa-calendar-alt"></i> {{ date('d F Y') }}
+                                </div>
+                            </div>
+                            <div style="background: #f8fafc; border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--border-color);">
+                                <p style="margin-bottom: 15px; color: var(--text-primary); font-weight: 500;">Pembaruan besar untuk antarmuka publik (Frontend UI/UX) berkonsep Glassmorphic, penguatan keamanan HTTP response headers, rate limiting login, dan integrasi metadata SEO komprehensif.</p>
+                                <ul style="padding-left: 20px; margin-bottom: 0; color: var(--text-secondary); line-height: 1.6; list-style-type: disc;">
+                                    <li style="margin-bottom: 8px;"><strong>Redesain Halaman Utama (home.blade.php):</strong> Implementasi Swiper Hero Slider interaktif berfitur <em>autoplay</em> dengan kontrol panah Prev/Next di bagian bawah, <em>floating stats bar</em>, kartu fitur interaktif, dan portal akses cepat.</li>
+                                    <li style="margin-bottom: 8px;"><strong>Menu Mobile Launcher Grid (includes/menu_mobile_app.blade.php):</strong> Transformasi menu mobile menjadi tampilan <em>Dashboard Launcher Grid</em> 4 kolom berikon gradien modern dengan jarak <em>side padding</em> yang pas di layar smartphone.</li>
+                                    <li style="margin-bottom: 8px;"><strong>Redesain Section Kontak (layouts/app.blade.php):</strong> Menyusun item kontak (IG, WA, Alamat, Web) secara vertikal dalam kartu putih yang tingginya sejajar presisi dengan bingkai Google Maps.</li>
+                                    <li style="margin-bottom: 8px;"><strong>Glassmorphism Design System:</strong> Penerapan tema <em>Glassmorphism</em> modern (<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">backdrop-filter: blur()</code>, kartu transparan, border kaca, dan badge emas) pada halaman <em>Tentang Kami</em> (<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">tentang_kami.blade.php</code>) dan <em>Track Alumni</em> (<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">track_alumni.blade.php</code>).</li>
+                                    <li style="margin-bottom: 8px;"><strong>Portal Akademik Orang Tua (orang_tua.blade.php):</strong> Redesain halaman login Ortu dengan standar <em>University Academic Portal System (SIM-ORTU)</em>, proteksi SSL, fitur <em>toggle view/hide password</em>, serta visualisasi pendampingan studi lanjut.</li>
+                                    <li style="margin-bottom: 8px;"><strong>Security Hardening:</strong> Pembuatan middleware <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">SecurityHeaders</code> (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy), penerapan <em>Brute Force Rate Limiting</em> (<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">throttle:6,1</code>) pada rute login, dan optimalisasi <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">robots.txt</code>.</li>
+                                    <li style="margin-bottom: 8px;"><strong>SEO Optimization & Structured Data:</strong> Integrasi Open Graph (OG) meta tags, Twitter Cards, Canonical Link, CSRF token header, dan Schema.org JSON-LD <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: #334155;">EducationalOrganization</code> markup.</li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <!-- Update Item 1 -->
                         <div style="position: relative; margin-bottom: 40px; z-index: 2;">
                             <div style="position: absolute; left: -26px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--primary-light);"></div>

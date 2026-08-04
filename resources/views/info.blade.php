@@ -79,9 +79,12 @@
                             @foreach ($beritas as $berita)
                                 <div class="col-12">
                                     <article>
-                                        <div class="post-img">
-                                            <img src="{{ asset('storage/' . $berita->foto) }}" alt=""
-                                                class="img-fluid">
+                                        <div class="post-img overflow-hidden rounded-4" style="height: 280px;">
+                                            @if ($berita->foto)
+                                                <img src="{{ asset('storage/' . $berita->foto) }}" alt="{{ $berita->judul_berita }}" class="img-fluid w-100 h-100" style="object-fit: cover; object-position: center;" onerror="this.onerror=null;this.src='{{ asset('halaman_umum/assets/img/no-images.png') }}';">
+                                            @else
+                                                <img src="{{ asset('halaman_umum/assets/img/no-images.png') }}" alt="{{ $berita->judul_berita }}" class="img-fluid w-100 h-100" style="object-fit: cover; object-position: center;">
+                                            @endif
                                         </div>
                                         <h2 class="title">
                                             <a

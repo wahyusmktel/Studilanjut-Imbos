@@ -1,90 +1,324 @@
 @extends('layouts.app')
 
-@section('title', 'Absensi Guru - Studi Lanjut IMBOS Pringsewu')
+@section('title', 'Login Portal Guru - Studi Lanjut IMBOS Pringsewu')
 
 @section('content')
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero section">
+<style>
+    /* Modern Teacher Portal Login Styling */
+    .guru-hero-section {
+        position: relative;
+        padding: 120px 0 70px 0;
+        background: linear-gradient(135deg, #0b192c 0%, #1e3a8a 50%, #0f2b5c 100%);
+        overflow: hidden;
+        color: #ffffff;
+    }
 
-        @include('includes.menu_mobile_app')
+    .guru-hero-section .hero-waves {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        z-index: 5;
+    }
 
-        <div class="container">
-            <div class="row gy-4">
-                <div class="col-lg-6 order-2 order-lg-2 d-flex flex-column justify-content-center">
-                    <h1 data-aos="fade-up">Assalamualaikum, Wr, Wb</h1>
-                    <p data-aos="fade-up" data-aos-delay="100">Hallo Star Teacher!!!
-                        <br>Saatnya mengisi daftar Kehadiran di setiap Pertemuan Bimbel Studi Lanjut IMBOS.
+    /* Modern Login Card */
+    .guru-login-card {
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 40px 36px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #1e293b;
+        position: relative;
+        z-index: 10;
+    }
+
+    .guru-card-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 6px 16px;
+        border-radius: 50px;
+        margin-bottom: 16px;
+    }
+
+    .guru-card-title {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .guru-card-subtitle {
+        color: #64748b;
+        font-size: 0.92rem;
+        margin-bottom: 28px;
+        line-height: 1.5;
+    }
+
+    /* Input Field Customization */
+    .input-icon-group {
+        position: relative;
+        margin-bottom: 22px;
+    }
+
+    .input-icon-group .input-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 1.15rem;
+        z-index: 5;
+        transition: color 0.25s ease;
+    }
+
+    .input-icon-group .form-control-guru {
+        width: 100%;
+        padding: 14px 45px 14px 48px;
+        border-radius: 14px;
+        border: 1.5px solid #cbd5e1;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1e293b;
+        transition: all 0.25s ease;
+        background-color: #f8fafc;
+    }
+
+    .input-icon-group .form-control-guru:focus {
+        background-color: #ffffff;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        outline: none;
+    }
+
+    .input-icon-group .form-control-guru:focus + .input-icon {
+        color: #2563eb;
+    }
+
+    .password-toggle-btn {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 4px;
+        z-index: 5;
+        transition: color 0.2s ease;
+    }
+
+    .password-toggle-btn:hover {
+        color: #2563eb;
+    }
+
+    /* Login Submit Button */
+    .btn-guru-login {
+        width: 100%;
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 800;
+        padding: 14px;
+        border-radius: 50px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .btn-guru-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+        color: #ffffff;
+    }
+
+    /* Security Footer Badge */
+    .security-notice {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 20px;
+        font-size: 0.78rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Feature Highlight Badges */
+    .feature-badge-item {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 12px 18px;
+        border-radius: 16px;
+        color: #ffffff;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .feature-badge-item i {
+        font-size: 1.2rem;
+        color: #60a5fa;
+    }
+
+    @media (max-width: 991px) {
+        .guru-hero-section {
+            padding: 95px 0 50px 0;
+        }
+        .guru-login-card {
+            padding: 30px 24px;
+        }
+    }
+</style>
+
+<!-- Hero & Login Section -->
+<section id="hero" class="guru-hero-section">
+    @include('includes.menu_mobile_app')
+
+    <div class="container position-relative" style="z-index: 10;">
+        <div class="row gy-4 align-items-center">
+            
+            <!-- Left Side: Login Form Card -->
+            <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right">
+                <div class="guru-login-card">
+                    <div class="guru-card-badge">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>SIM-GURU • PORTAL ABSENSI</span>
+                    </div>
+
+                    <h2 class="guru-card-title">Assalamualaikum, Star Teacher! 👋</h2>
+                    <p class="guru-card-subtitle">
+                        Saatnya mencatat kehadiran & progres bimbingan studi lanjut siswa SMAIT IMBOS Pringsewu.
                     </p>
-                    <div class="d-flex flex-column" data-aos="fade-up" data-aos-delay="200">
-                        <div class="row">
-                            <div class="col-md-12">
 
-                                <form role="form" class="get-a-quote" id="contact-form" method="POST"
-                                    action="{{ route('guru.login.submit') }}">
-                                    @csrf
-                                    <div class="group-img">
-                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z"
-                                                fill="#555555"></path>
-                                        </svg>
-                                        <input type="text" class="form-controls" name="nip"
-                                            placeholder="Masukan NIY GURU" required>
-                                    </div>
-                                    <div class="group-img">
-                                        <svg width="22" height="18" viewBox="0 0 22 18" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z"
-                                                fill="#444444"></path>
-                                            <path
-                                                d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z"
-                                                fill="#444444"></path>
-                                        </svg>
-                                        <input type="password" class="form-controls" name="password"
-                                            placeholder="Masukan Password" required>
-                                    </div>
-                                    <button type="submit" class="btn batton"> MASUK </button>
-                                </form>
-                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                                @if (session('error'))
-                                    <script>
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Oops...',
-                                            text: '{{ session('error') }}',
-                                        });
-                                    </script>
-                                @endif
-                            </div>
+                    <form role="form" id="contact-form" method="POST" action="{{ route('guru.login.submit') }}">
+                        @csrf
+
+                        <!-- Field NIY Guru -->
+                        <div class="input-icon-group">
+                            <i class="bi bi-person-vcard-fill input-icon"></i>
+                            <input type="text" class="form-control-guru" name="nip" placeholder="Masukkan NIY GURU..." required autocomplete="username">
+                        </div>
+
+                        <!-- Field Password -->
+                        <div class="input-icon-group">
+                            <i class="bi bi-lock-fill input-icon"></i>
+                            <input type="password" id="guruPasswordInput" class="form-control-guru" name="password" placeholder="Masukkan Password..." required autocomplete="current-password">
+                            <button type="button" class="password-toggle-btn" onclick="toggleGuruPassword()" title="Tampilkan/Sembunyikan Password">
+                                <i class="bi bi-eye-slash-fill" id="guruPasswordEyeIcon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-guru-login">
+                            <span>MASUK KE PORTAL GURU</span>
+                            <i class="bi bi-arrow-right-circle-fill fs-5"></i>
+                        </button>
+                    </form>
+
+                    <!-- Security Notice -->
+                    <div class="security-notice">
+                        <i class="bi bi-lock-fill text-success"></i>
+                        <span>Sistem Otentikasi Terenkripsi & Dilindungi SSL</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Hero Illustration & Features -->
+            <div class="col-lg-6 order-1 order-lg-2 text-center" data-aos="zoom-in" data-aos-delay="100">
+                <div class="position-relative d-inline-block">
+                    <img src="{{ asset('halaman_umum/assets/img/hero-img-putri.png') }}" class="img-fluid animated" alt="Studi Lanjut Teacher Illustration" style="max-height: 380px;">
+                </div>
+
+                <!-- Feature Highlights Bar -->
+                <div class="row g-3 mt-3 justify-content-center">
+                    <div class="col-sm-4">
+                        <div class="feature-badge-item">
+                            <i class="bi bi-journal-check"></i>
+                            <span>Presensi Pertemuan</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="feature-badge-item">
+                            <i class="bi bi-camera-fill"></i>
+                            <span>Foto Dokumentasi</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="feature-badge-item">
+                            <i class="bi bi-graph-up-arrow"></i>
+                            <span>Progres Studi Lanjut</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 order-1 order-lg-1 hero-img" data-aos="zoom-out">
-                    <img src="{{ asset('halaman_umum/assets/img/hero-img-putri.png') }}" class="img-fluid animated"
-                        alt="">
-                </div>
             </div>
+
         </div>
+    </div>
 
-        <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 24 150 28 " preserveAspectRatio="none">
-            <defs>
-                <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
-            </defs>
-            <g class="wave1">
-                <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255,255,255, .1)">
-            </g>
-            <g class="wave2">
-                <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)">
-            </g>
-            <g class="wave3">
-                <use xlink:href="#wave-path" x="50" y="9" fill="#f6c506">
-            </g>
-        </svg>
+    <!-- Wave Divider -->
+    <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none">
+        <defs>
+            <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+        </defs>
+        <g class="wave1">
+            <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255, 255, 255, .1)"></use>
+        </g>
+        <g class="wave2">
+            <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255, 255, 255, .2)"></use>
+        </g>
+        <g class="wave3">
+            <use xlink:href="#wave-path" x="50" y="9" fill="#f8fafc"></use>
+        </g>
+    </svg>
+</section>
 
-    </section><!-- /Hero Section -->
+<!-- SweetAlert2 & Interactive Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function toggleGuruPassword() {
+        const passwordInput = document.getElementById('guruPasswordInput');
+        const eyeIcon = document.getElementById('guruPasswordEyeIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('bi-eye-slash-fill');
+            eyeIcon.classList.add('bi-eye-fill');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('bi-eye-fill');
+            eyeIcon.classList.add('bi-eye-slash-fill');
+        }
+    }
+</script>
+
+@if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Masuk',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#2563eb'
+        });
+    </script>
+@endif
 
 @endsection
