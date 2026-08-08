@@ -119,6 +119,9 @@ Route::prefix('admin')->group(function () {
         Route::post('/kelas', [AdminKelasController::class, 'store'])->name('admin.kelas.store');
         Route::post('/kelas/{id}', [AdminKelasController::class, 'update'])->name('admin.kelas.update');
         Route::delete('/kelas/{id}', [AdminKelasController::class, 'destroy'])->name('admin.kelas.destroy');
+        Route::get('/kelas/{kelas}/anggota', [AdminKelasController::class, 'anggota'])->name('admin.kelas.anggota');
+        Route::post('/kelas/{kelas}/anggota', [AdminKelasController::class, 'tambahAnggota'])->name('admin.kelas.anggota.tambah');
+        Route::delete('/kelas/{kelas}/anggota/{siswa}', [AdminKelasController::class, 'keluarkanAnggota'])->name('admin.kelas.anggota.keluarkan');
 
         // Program Bimbel
         Route::get('/program_bimbel', [ProgramBimbelController::class, 'index'])->name('admin.program_bimbel.index');

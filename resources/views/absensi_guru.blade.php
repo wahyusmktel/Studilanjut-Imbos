@@ -520,10 +520,8 @@
                                 <label><i class="bi bi-clock me-1"></i> Jadwal Waktu</label>
                                 <select name="waktu" id="waktu" class="form-select form-control-custom" required>
                                     <option value="">-- Pilih Waktu Bimbingan --</option>
-                                    <option value="13.15 - 14.30">13.15 - 14.30</option>
-                                    <option value="15.45 - 17.00">15.45 - 17.00</option>
-                                    <option value="09.10 - 10.20">09.10 - 10.20</option>
-                                    <option value="10.30 - 11.45">10.30 - 11.45</option>
+                                    <option value="13.20-14.25">13.20-14.25</option>
+                                    <option value="16.15-17.20">16.15-17.20</option>
                                 </select>
                             </div>
 
@@ -548,8 +546,8 @@
                             </div>
 
                             <div class="form-group-custom">
-                                <label><i class="bi bi-pencil-square me-1"></i> Catatan Pertemuan</label>
-                                <textarea name="catatan" class="form-control form-control-custom" rows="3" placeholder="Tuliskan progres atau catatan penting bimbingan..." required></textarea>
+                                <label><i class="bi bi-pencil-square me-1"></i> Materi Yang Dipelajari</label>
+                                <textarea name="catatan" class="form-control form-control-custom" rows="3" placeholder="Tuliskan materi yang dipelajari..." required></textarea>
                             </div>
 
                             <!-- Drag and Drop Upload Foto Dokumentasi -->

@@ -44,6 +44,7 @@
                         <th>Nama Kelompok</th>
                         <th>Kode Kelompok</th>
                         <th>Status Kedinasan</th>
+                        <th>Jumlah Anggota</th>
                         <th width="120" class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -68,8 +69,16 @@
                                 <span class="badge-modern neutral">Tidak Diketahui</span>
                             @endif
                         </td>
+                        <td>
+                            <a href="{{ route('admin.kelas.anggota', $item->id) }}" class="badge-modern primary" title="Lihat anggota kelas">
+                                <i class="fa-solid fa-users"></i> {{ $item->anggota_count }} siswa
+                            </a>
+                        </td>
                         <td class="text-center">
                             <div class="action-btn-group justify-content-center">
+                                <a href="{{ route('admin.kelas.anggota', $item->id) }}" class="btn-action" style="color:#2563eb;" data-toggle="tooltip" title="Lihat Anggota Kelas">
+                                    <i class="fa-solid fa-users"></i>
+                                </a>
                                 <a href="#" class="btn-action btn-action-edit edit-button" 
                                    data-toggle="tooltip" 
                                    title="Edit Kelompok" 
@@ -90,7 +99,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
+                        <td colspan="6" class="text-center py-4 text-muted">
                             <div class="empty-state">
                                 <i class="fa-solid fa-users-rectangle fa-2x mb-2"></i>
                                 <p>Belum ada data kelompok / kelas.</p>

@@ -16,7 +16,7 @@ class Kelas extends Model
         'tingkat_kelas',
         'status_kedinasan',
         'status',
-        'tahun_pelajaran_id'
+        'tahun_pelajaran_id',
     ];
 
     public static function boot()
@@ -41,6 +41,13 @@ class Kelas extends Model
     public function siswa()
     {
         return $this->hasMany(Siswa::class);
+    }
+
+    public function anggota()
+    {
+        return $this->belongsToMany(Siswa::class, 'kelas_siswa', 'kelas_id', 'siswa_id')
+            ->withPivot('program_bimbel_id')
+            ->withTimestamps();
     }
 
     public function tahunPelajaran()
