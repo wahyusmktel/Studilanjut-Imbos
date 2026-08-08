@@ -1,39 +1,39 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AdminLoginController;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminGuruController;
-use App\Http\Controllers\Admin\MataPelajaranController;
-use App\Http\Controllers\Admin\AdminKelasController;
-use App\Http\Controllers\Admin\AdminNilaiController;
-use App\Http\Controllers\Admin\AdminTahunPelajaranController;
-use App\Http\Controllers\Admin\AdminTryoutController;
-use App\Http\Controllers\Admin\ProgramBimbelController;
-use App\Http\Controllers\Admin\SiswaController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\GuruAuthController;
 use App\Http\Controllers\AbsensiGuruController;
 use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\Admin\AbsensiGurubaruController;
-use App\Http\Controllers\OrangTuaController;
-use App\Http\Controllers\SertifikatController;
 use App\Http\Controllers\Admin\AdminAlumniController;
-use App\Http\Controllers\Admin\AdminJenisPtController;
-use App\Http\Controllers\Admin\AdminTestimonialsController;
-use App\Http\Controllers\Admin\AdminKategoriController;
 use App\Http\Controllers\Admin\AdminBeritaController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminFilesController;
+use App\Http\Controllers\Admin\AdminGuruController;
+use App\Http\Controllers\Admin\AdminJenisPtController;
+use App\Http\Controllers\Admin\AdminKategoriController;
+use App\Http\Controllers\Admin\AdminKelasController;
 use App\Http\Controllers\Admin\AdminKomentarController;
-use App\Http\Controllers\Admin\AdminSettingSertifikatController;
-use App\Http\Controllers\Admin\AdminTanggapanController;
-use App\Http\Controllers\Admin\SiswaImportController;
+use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Admin\AdminNilaiController;
 use App\Http\Controllers\Admin\AdminProfileController;
-use App\Http\Controllers\TrackAlumniController;
+use App\Http\Controllers\Admin\AdminSettingSertifikatController;
+use App\Http\Controllers\Admin\AdminTahunPelajaranController;
+use App\Http\Controllers\Admin\AdminTanggapanController;
+use App\Http\Controllers\Admin\AdminTestimonialsController;
+use App\Http\Controllers\Admin\AdminTryoutController;
+use App\Http\Controllers\Admin\MataPelajaranController;
+use App\Http\Controllers\Admin\ProgramBimbelController;
+use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\GuruAuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoController;
+use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\SertifikatController;
 use App\Http\Controllers\TentangKamiController;
+use App\Http\Controllers\TrackAlumniController;
 use App\Http\Controllers\TryOutController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -69,11 +69,11 @@ Route::prefix('orang-tua')->group(function () {
     });
 });
 
-//Halaman Track Alumni
+// Halaman Track Alumni
 Route::get('/tracking-alumni', [TrackAlumniController::class, 'index'])->name('track.alumni.index');
 Route::get('/tracking-alumni/{id}', [TrackAlumniController::class, 'show'])->name('alumni.detail');
 
-//Halaman Berita
+// Halaman Berita
 Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
 Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.detail');
 Route::post('/komentar', [BeritaController::class, 'storeKomentar'])->middleware('throttle:10,1')->name('komentar.store');
@@ -82,13 +82,13 @@ Route::get('/search', [InfoController::class, 'search'])->name('berita.search');
 // Route untuk menampilkan berita berdasarkan kategori
 Route::get('/category/{id}', [InfoController::class, 'category'])->name('berita.category');
 
-//Halaman Tentang Kami
+// Halaman Tentang Kami
 Route::get('/tentang-kami', [TentangKamiController::class, 'index'])->name('tentang_kami.index');
 
-//Halaman Program
+// Halaman Program
 Route::get('/program', [ProgramController::class, 'index'])->name('program.index');
 
-//Halaman TryOut
+// Halaman TryOut
 Route::get('/tryout', [TryOutController::class, 'index'])->name('tryout.index');
 
 Route::prefix('admin')->group(function () {
@@ -101,7 +101,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         // Route::get('/guru/data_guru', [AdminGuruController::class, 'index'])->name('admin.guru.data_guru');
 
-        //Mata Pelajaran
+        // Mata Pelajaran
         Route::get('/mata_pelajaran', [MataPelajaranController::class, 'index'])->name('admin.mata_pelajaran.index');
         Route::post('/mata_pelajaran', [MataPelajaranController::class, 'store'])->name('admin.mata_pelajaran.store');
         Route::post('/mata_pelajaran/{id}', [MataPelajaranController::class, 'update'])->name('admin.mata_pelajaran.update');
@@ -222,11 +222,17 @@ Route::prefix('admin')->group(function () {
         Route::post('/setting_sertifikat/{id}', [AdminSettingSertifikatController::class, 'update'])->name('admin.setting_sertifikat.update');
         Route::delete('/setting_sertifikat/{id}', [AdminSettingSertifikatController::class, 'destroy'])->name('admin.setting_sertifikat.destroy');
 
-        //Profile Admin
+        // Profile Admin
         Route::get('/profile', [AdminProfileController::class, 'editProfile'])->name('admin.profile.edit');
         Route::post('/profile', [AdminProfileController::class, 'updateProfile'])->name('admin.profile.update');
 
         // Changelog
         Route::view('/changelog', 'admin.changelog.index')->name('admin.changelog.index');
+
+        // File manager untuk storage/app/public
+        Route::get('/files', [AdminFilesController::class, 'index'])->name('admin.files.index');
+        Route::post('/files/upload', [AdminFilesController::class, 'upload'])->name('admin.files.upload');
+        Route::post('/files/folder', [AdminFilesController::class, 'createFolder'])->name('admin.files.folder');
+        Route::delete('/files', [AdminFilesController::class, 'destroy'])->name('admin.files.destroy');
     });
 });

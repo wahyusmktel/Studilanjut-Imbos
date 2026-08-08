@@ -18,28 +18,31 @@ echo -e "${BLUE}====================================================${NC}"
 echo -e "${BLUE}  MEMULAI DEPLOYMENT STUDI LANJUT IMBOS             ${NC}"
 echo -e "${BLUE}====================================================${NC}"
 
-# 1. Aktifkan Maintenance Mode
-echo -e "${YELLOW}[1/8] Mengaktifkan Maintenance Mode...${NC}"
+# 1. Memperbaiki Permisi Folder Awal (Storage & Cache)
+echo -e "${YELLOW}[1/8] Menyiapkan hak akses folder storage & cache...${NC}"
+CURRENT_USER=${SUDO_USER:-$USER}
+sudo chown -R $CURRENT_USER:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+
+# 2. Aktifkan Maintenance Mode
+echo -e "${YELLOW}[2/8] Mengaktifkan Maintenance Mode...${NC}"
 php artisan down || true
 
-# 2. Pull Update Terbaru dari Repository Git
-echo -e "${YELLOW}[2/8] Menarik update dari Git (git pull)...${NC}"
+# 3. Pull Update Terbaru dari Repository Git
+echo -e "${YELLOW}[3/8] Menarik update dari Git (git pull)...${NC}"
 git pull origin main
 
-# 3. Install / Update Dependensi Composer
-echo -e "${YELLOW}[3/8] Memasang dependensi Composer...${NC}"
+# 4. Install / Update Dependensi Composer
+echo -e "${YELLOW}[4/8] Memasang dependensi Composer...${NC}"
 composer install --no-dev --optimize-autoloader
 
-# 4. Menjalankan Migrasi Database
-echo -e "${YELLOW}[4/8] Menjalankan migrasi database...${NC}"
+# 5. Menjalankan Migrasi Database
+echo -e "${YELLOW}[5/8] Menjalankan migrasi database...${NC}"
 php artisan migrate --force
 
-# 5. Menghubungkan Storage Symlink
-echo -e "${YELLOW}[5/8] Memeriksa storage link...${NC}"
-php artisan storage:link || true
-
-# 6. Mengosongkan dan Mengoptimalkan Cache Laravel
+# 6. Menghubungkan Storage Symlink & Optimasi Cache
 echo -e "${YELLOW}[6/8] Memperbarui dan mengoptimalkan cache Laravel...${NC}"
+php artisan storage:link || true
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
@@ -54,9 +57,8 @@ php artisan event:cache
 echo -e "${YELLOW}[7/8] Mematikan Maintenance Mode (Aplikasi Online)...${NC}"
 php artisan up || sudo php artisan up
 
-# 8. Memperbaiki Hak Akses Permisi Folder Storage & Cache
-echo -e "${YELLOW}[8/8] Memperbaiki izin direktori (permissions)...${NC}"
-CURRENT_USER=${SUDO_USER:-$USER}
+# 8. Memastikan Hak Akses Akhir Sempurna
+echo -e "${YELLOW}[8/8] Memastikan hak akses akhir (permissions)...${NC}"
 sudo chown -R $CURRENT_USER:www-data storage bootstrap/cache
 sudo chmod -R 775 storage bootstrap/cache
 

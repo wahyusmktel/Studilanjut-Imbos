@@ -153,6 +153,14 @@
             </li>
             
             <li class="sidebar-menu-label">System</li>
+
+            <!-- Files -->
+            <li class="sidebar-menu-item {{ Request::is('admin/files*') ? 'active' : '' }}">
+                <a href="{{ route('admin.files.index') }}" class="sidebar-menu-link {{ Request::is('admin/files*') ? 'active' : '' }}" title="Files">
+                    <i class="fa-solid fa-folder-open sidebar-menu-icon"></i>
+                    <span class="sidebar-menu-text">Files</span>
+                </a>
+            </li>
             
             <!-- Changelog -->
             <li class="sidebar-menu-item {{ Request::is('admin/changelog') ? 'active' : '' }}">
