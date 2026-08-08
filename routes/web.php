@@ -232,6 +232,7 @@ Route::prefix('admin')->group(function () {
         // File manager untuk storage/app/public
         Route::get('/files', [AdminFilesController::class, 'index'])->name('admin.files.index');
         Route::post('/files/upload', [AdminFilesController::class, 'upload'])->name('admin.files.upload');
+        Route::post('/files/extract', [AdminFilesController::class, 'extractZip'])->name('admin.files.extract');
         Route::post('/files/folder', [AdminFilesController::class, 'createFolder'])->name('admin.files.folder');
         Route::delete('/files', [AdminFilesController::class, 'destroy'])->name('admin.files.destroy');
     });
