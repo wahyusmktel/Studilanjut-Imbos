@@ -110,7 +110,7 @@ class AdminFilesController extends Controller
         $disk = Storage::disk('public');
         abort_unless($path === '' || $disk->directoryExists($path), 404);
 
-        $storedName = $this->safeFilename($validated['stored_name'] ?: $validated['filename']);
+        $storedName = $this->safeFilename($validated['stored_name'] ?? $validated['filename']);
         if ($validated['chunk_index'] === 0 && $disk->exists(trim($path.'/'.$storedName, '/'))) {
             $storedName = pathinfo($storedName, PATHINFO_FILENAME)
                 .'-'.now()->format('YmdHis')
