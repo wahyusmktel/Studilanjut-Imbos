@@ -32,6 +32,11 @@
         .cloud-progress-percent { color: var(--cloud-blue); font-size: 28px; font-weight: 700; }
         .cloud-progress-detail { color: var(--cloud-muted); font-size: 13px; }
         .cloud-modal-icon { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; margin-bottom: 12px; border-radius: 13px; background: #edf3ff; color: var(--cloud-blue); font-size: 20px; }
+        .cloud-dropzone { padding: 30px 18px; border: 2px dashed #b9cbed; border-radius: 16px; background: #f8faff; color: #69778d; text-align: center; cursor: pointer; transition: .2s ease; }
+        .cloud-dropzone:hover, .cloud-dropzone.dragover { border-color: var(--cloud-blue); background: #edf3ff; color: var(--cloud-blue); }
+        .cloud-dropzone i { display: block; margin-bottom: 10px; font-size: 28px; color: var(--cloud-blue); }
+        .cloud-selected-files { max-height: 115px; overflow: auto; margin-top: 12px; text-align: left; font-size: 12px; }
+        .cloud-selected-file { display:flex; justify-content:space-between; gap:10px; padding:7px 9px; border-bottom:1px solid #edf0f6; }
         @media (max-width: 600px) { .cloud-hero { padding: 22px; } .cloud-table thead th:nth-child(2), .cloud-table tbody td:nth-child(2), .cloud-table thead th:nth-child(3), .cloud-table tbody td:nth-child(3) { display:none; } }
     </style>
 
@@ -102,7 +107,15 @@
         <form id="uploadForm" method="POST" action="{{ route('admin.files.upload') }}" enctype="multipart/form-data">
             @csrf <input type="hidden" name="path" value="{{ $path }}">
             <div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title"><i class="fa-solid fa-cloud-arrow-up" style="color:#2764e7;"></i> Upload ke Files</h4></div>
-            <div class="modal-body"><label>Pilih file</label><input type="file" name="files[]" class="form-control" multiple required><small class="text-muted">Maksimal 50 MB per file. ZIP dapat diekstrak setelah upload.</small></div>
+            <div class="modal-body">
+                <div id="dropZone" class="cloud-dropzone">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <strong>Tarik file ke sini</strong><br><span>atau klik untuk memilih dari perangkat</span>
+                    <input id="fileInput" type="file" name="files[]" multiple required style="display:none;">
+                </div>
+                <div id="selectedFiles" class="cloud-selected-files"></div>
+                <small class="text-muted" style="display:block;margin-top:10px;">Maksimal 5 GB per file. Upload dikirim dalam chunk 8 MB agar kompatibel dengan Cloudflare. ZIP dapat diekstrak setelah upload.</small>
+            </div>
             <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Batal</button><button class="cloud-action cloud-action-primary" type="submit"><i class="fa-solid fa-upload"></i> Mulai Upload</button></div>
         </form>
     </div></div></div>
@@ -139,20 +152,49 @@
             progressBar.style.width = percent + '%'; progressPercent.textContent = percent + '%'; progressDetail.textContent = detail || '';
         }
 
-        document.getElementById('uploadForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const form = event.target, xhr = new XMLHttpRequest();
-            const data = new FormData(form), files = form.querySelector('[name="files[]"]').files;
-            if (!files.length) return;
-            showProgress('Mengunggah file...', 'File sedang dikirim ke server.', 'fa-cloud-arrow-up');
-            xhr.open('POST', form.action); xhr.setRequestHeader('Accept', 'application/json'); xhr.setRequestHeader('X-CSRF-TOKEN', filesCsrf);
-            xhr.upload.addEventListener('progress', function (e) { if (e.lengthComputable) updateProgress(Math.round((e.loaded / e.total) * 100), files.length + ' file sedang diunggah'); });
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 300) { updateProgress(100, 'Upload selesai.'); progressTitle.textContent = 'Upload selesai'; progressText.textContent = 'Memuat ulang daftar files...'; setTimeout(() => window.location.reload(), 700); }
-                else { progressTitle.textContent = 'Upload gagal'; progressText.textContent = 'Periksa ukuran dan format file.'; progressIcon.className = 'fa-solid fa-circle-exclamation'; }
-            };
-            xhr.onerror = function () { progressTitle.textContent = 'Koneksi gagal'; progressText.textContent = 'Silakan coba lagi.'; progressIcon.className = 'fa-solid fa-circle-exclamation'; };
-            xhr.send(data);
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const selectedFiles = document.getElementById('selectedFiles');
+        let filesToUpload = [];
+        const chunkSize = 8 * 1024 * 1024;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', () => setSelectedFiles(fileInput.files));
+        ['dragenter', 'dragover'].forEach(eventName => dropZone.addEventListener(eventName, event => { event.preventDefault(); dropZone.classList.add('dragover'); }));
+        ['dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, event => { event.preventDefault(); dropZone.classList.remove('dragover'); }));
+        dropZone.addEventListener('drop', event => setSelectedFiles(event.dataTransfer.files));
+
+        function setSelectedFiles(fileList) {
+            filesToUpload = Array.from(fileList);
+            selectedFiles.innerHTML = filesToUpload.map(file => '<div class="cloud-selected-file"><span><i class="fa-solid fa-file"></i> ' + escapeHtml(file.name) + '</span><span>' + formatClientBytes(file.size) + '</span></div>').join('');
+        }
+
+        function escapeHtml(value) { return value.replace(/[&<>'"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character])); }
+        function formatClientBytes(bytes) { if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB'; if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB'; return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB'; }
+        function xhrChunk(formData, loadedBefore, totalBytes, detail) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest(); xhr.open('POST', '{{ route('admin.files.upload-chunk') }}'); xhr.setRequestHeader('Accept', 'application/json'); xhr.setRequestHeader('X-CSRF-TOKEN', filesCsrf);
+                xhr.upload.addEventListener('progress', event => { if (event.lengthComputable) updateProgress(Math.min(99, Math.round(((loadedBefore + event.loaded) / totalBytes) * 100)), detail); });
+                xhr.onload = () => { let data = {}; try { data = JSON.parse(xhr.responseText); } catch (e) {} if (xhr.status >= 200 && xhr.status < 300) resolve(data); else reject(new Error(data.message || 'Upload gagal.')); };
+                xhr.onerror = () => reject(new Error('Koneksi upload terputus.')); xhr.send(formData);
+            });
+        }
+
+        async function uploadOneFile(file, path, loadedBefore, totalBytes) {
+            const uploadId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2);
+            const totalChunks = Math.ceil(file.size / chunkSize); let storedName = '';
+            for (let index = 0; index < totalChunks; index++) {
+                const data = new FormData(); data.append('path', path); data.append('chunk', file.slice(index * chunkSize, Math.min(file.size, (index + 1) * chunkSize), file.type)); data.append('upload_id', uploadId); data.append('chunk_index', index); data.append('total_chunks', totalChunks); data.append('total_size', file.size); data.append('filename', file.name); if (storedName) data.append('stored_name', storedName);
+                const result = await xhrChunk(data, loadedBefore + Math.min(index * chunkSize, file.size), totalBytes, file.name + ' (' + (index + 1) + '/' + totalChunks + ')'); storedName = result.stored_name || storedName;
+            }
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); if (!filesToUpload.length) { alert('Pilih minimal satu file terlebih dahulu.'); return; }
+            const path = this.querySelector('[name="path"]').value, totalBytes = filesToUpload.reduce((sum, file) => sum + file.size, 0); let loadedBefore = 0;
+            showProgress('Mengunggah file...', 'Upload aman menggunakan beberapa bagian.', 'fa-cloud-arrow-up');
+            try { for (const file of filesToUpload) { await uploadOneFile(file, path, loadedBefore, totalBytes); loadedBefore += file.size; updateProgress(Math.round((loadedBefore / totalBytes) * 100), file.name + ' selesai'); } progressTitle.textContent = 'Upload selesai'; progressText.textContent = 'Memuat ulang daftar files...'; updateProgress(100, 'Semua file berhasil diupload.'); setTimeout(() => window.location.reload(), 900); }
+            catch (error) { progressTitle.textContent = 'Upload gagal'; progressText.textContent = error.message; progressIcon.className = 'fa-solid fa-circle-exclamation'; }
         });
 
         function startExtraction(zipPath) {

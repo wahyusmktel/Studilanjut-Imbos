@@ -15,7 +15,9 @@ class AdminFilesController extends Controller
 
     private const MAX_ARCHIVE_ENTRIES = 10000;
 
-    private const MAX_ARCHIVE_SIZE = 1073741824;
+    private const MAX_ARCHIVE_SIZE = 5368709120;
+
+    private const MAX_UPLOAD_SIZE = 5368709120;
 
     public function index(Request $request)
     {
@@ -85,6 +87,72 @@ class AdminFilesController extends Controller
             ->with('success', 'File berhasil diupload.');
     }
 
+    public function uploadChunk(Request $request)
+    {
+        $validated = $request->validate([
+            'path' => ['nullable', 'string', 'max:1000'],
+            'chunk' => ['required', 'file', 'max:16384'],
+            'upload_id' => ['required', 'string', 'alpha_dash', 'max:80'],
+            'chunk_index' => ['required', 'integer', 'min:0', 'max:999'],
+            'total_chunks' => ['required', 'integer', 'min:1', 'max:1000'],
+            'total_size' => ['required', 'integer', 'min:1', 'max:'.self::MAX_UPLOAD_SIZE],
+            'filename' => ['required', 'string', 'max:255'],
+            'stored_name' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        if ($validated['chunk_index'] >= $validated['total_chunks']) {
+            return response()->json(['message' => 'Nomor chunk tidak valid.'], 422);
+        }
+
+        $path = $this->normalizePath($validated['path'] ?? '');
+        abort_if($path === null, 404);
+
+        $disk = Storage::disk('public');
+        abort_unless($path === '' || $disk->directoryExists($path), 404);
+
+        $storedName = $this->safeFilename($validated['stored_name'] ?: $validated['filename']);
+        if ($validated['chunk_index'] === 0 && $disk->exists(trim($path.'/'.$storedName, '/'))) {
+            $storedName = pathinfo($storedName, PATHINFO_FILENAME)
+                .'-'.now()->format('YmdHis')
+                .'.'.strtolower(pathinfo($storedName, PATHINFO_EXTENSION));
+        }
+
+        $local = Storage::disk('local');
+        $local->makeDirectory('file-uploads');
+        $temporaryPath = 'file-uploads/'.$validated['upload_id'].'.part';
+
+        if ($validated['chunk_index'] === 0) {
+            $local->delete($temporaryPath);
+        } elseif (! $local->exists($temporaryPath)) {
+            return response()->json(['message' => 'Chunk pertama belum diterima. Silakan ulangi upload.'], 422);
+        }
+
+        $source = fopen($request->file('chunk')->getRealPath(), 'rb');
+        $destination = fopen($local->path($temporaryPath), $validated['chunk_index'] === 0 ? 'wb' : 'ab');
+        stream_copy_to_stream($source, $destination);
+        fclose($source);
+        fclose($destination);
+
+        $isLastChunk = $validated['total_chunks'] === $validated['chunk_index'] + 1;
+        if (! $isLastChunk) {
+            return response()->json(['complete' => false, 'stored_name' => $storedName]);
+        }
+
+        if ($local->size($temporaryPath) !== (int) $validated['total_size']) {
+            $local->delete($temporaryPath);
+
+            return response()->json(['message' => 'Ukuran upload tidak sesuai. Silakan ulangi upload.'], 422);
+        }
+
+        $target = trim($path.'/'.$storedName, '/');
+        $stream = fopen($local->path($temporaryPath), 'rb');
+        $disk->put($target, $stream);
+        fclose($stream);
+        $local->delete($temporaryPath);
+
+        return response()->json(['complete' => true, 'stored_name' => $storedName, 'path' => $target]);
+    }
+
     public function extractZip(Request $request)
     {
         $validated = $request->validate([
@@ -125,8 +193,9 @@ class AdminFilesController extends Controller
                 $entry = $archive->statIndex($current);
                 $entryName = (string) ($entry['name'] ?? '');
                 $relativePath = $this->safeArchivePath($entryName);
+                $externalMode = ((int) ($entry['external_attributes'] ?? 0) >> 16) & 0xF000;
 
-                if ($relativePath === null || $this->isUnsafePublicFile($relativePath)) {
+                if ($relativePath === null || $this->isUnsafePublicFile($relativePath) || $externalMode === 0xA000) {
                     throw new \RuntimeException('ZIP berisi nama file yang tidak diizinkan: '.$entryName);
                 }
 
