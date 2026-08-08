@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Imports\SiswaImport;
-use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\ProgramBimbel;
+use App\Models\Siswa;
 use App\Models\TahunPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
@@ -59,11 +60,11 @@ class SiswaController extends Controller
         }
 
         // Logika pencarian tetap ada
-        if ($request->has('search') && !empty($request->input('search'))) {
+        if ($request->has('search') && ! empty($request->input('search'))) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('nama_siswa', 'like', '%' . $search . '%')
-                    ->orWhere('nis', 'like', '%' . $search . '%');
+                $q->where('nama_siswa', 'like', '%'.$search.'%')
+                    ->orWhere('nis', 'like', '%'.$search.'%');
             });
         }
 
@@ -152,9 +153,9 @@ class SiswaController extends Controller
 
             // Redirect jika berhasil
             return redirect()->route('admin.siswa.index')->with('success', 'Data Siswa berhasil ditambahkan.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             // Kembalikan ke halaman sebelumnya dengan error message
-            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data siswa. ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data siswa. '.$e->getMessage());
         }
     }
 
@@ -170,7 +171,7 @@ class SiswaController extends Controller
                 'tgl_lahir' => 'nullable|date',
                 'tmpt_lahir' => 'nullable|string|max:255',
                 'no_hp' => 'nullable|string|max:15',
-                'nis' => 'required|integer|unique:siswas,nis,' . $siswa->id,
+                'nis' => 'required|integer|unique:siswas,nis,'.$siswa->id,
                 'password' => 'nullable|string|max:255|confirmed',
                 'foto' => 'nullable|image|max:2048',
             ]);
@@ -209,11 +210,15 @@ class SiswaController extends Controller
     {
 
         $request->validate([
-            'file' => 'required|mimes:xls,xlsx'
+            'file' => 'required|mimes:xls,xlsx',
         ]);
 
-        Excel::import(new SiswaImport, $request->file('file'));
+        $import = new SiswaImport;
+        Excel::import($import, $request->file('file'));
+        $summary = $import->summary();
 
-        return redirect()->back()->with('success', 'Data siswa berhasil diimport.');
+        return redirect()->back()
+            ->with('success', 'Proses import selesai. '.$summary['imported'].' data berhasil diimport.')
+            ->with('import_summary', $summary);
     }
 }

@@ -151,6 +151,48 @@
     </div>
 </div>
 
+@if(session('import_summary'))
+@php($importSummary = session('import_summary'))
+<div class="modern-table-card" style="margin-top:24px; border:1px solid #dbe7f5; overflow:hidden;">
+    <div style="padding:20px 24px; background:linear-gradient(135deg,#f7fbff,#eef5ff); border-bottom:1px solid #dbe7f5; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div>
+            <h4 style="margin:0; color:#163b72; font-weight:700;"><i class="fa-solid fa-clipboard-check" style="color:#2563eb; margin-right:8px;"></i>Resume Import Excel</h4>
+            <p style="margin:6px 0 0; color:#64748b;">Periksa baris yang perlu diperbaiki sebelum import berikutnya.</p>
+        </div>
+        <span class="badge-modern primary">Total baris: {{ $importSummary['total'] ?? 0 }}</span>
+    </div>
+    <div style="padding:20px 24px;">
+        <div class="row" style="margin-bottom:16px;">
+            <div class="col-md-4"><div style="padding:16px;border-radius:12px;background:#ecfdf5;color:#047857;"><small>BERHASIL DIIMPORT</small><div style="font-size:26px;font-weight:700;">{{ $importSummary['imported'] ?? 0 }}</div></div></div>
+            <div class="col-md-4"><div style="padding:16px;border-radius:12px;background:#fff7ed;color:#c2410c;"><small>DUPLIKAT / DILEWATI</small><div style="font-size:26px;font-weight:700;">{{ $importSummary['duplicate_count'] ?? count($importSummary['duplicates'] ?? []) }}</div></div></div>
+            <div class="col-md-4"><div style="padding:16px;border-radius:12px;background:#fef2f2;color:#b91c1c;"><small>GAGAL DIIMPORT</small><div style="font-size:26px;font-weight:700;">{{ $importSummary['failed_count'] ?? count($importSummary['failed'] ?? []) }}</div></div></div>
+        </div>
+
+        @if(count($importSummary['duplicates'] ?? []) > 0)
+        <div style="margin-top:16px; border:1px solid #fed7aa; border-radius:10px; overflow:hidden;">
+            <div style="padding:13px 16px; background:#fff7ed; color:#9a3412; font-weight:600;"><i class="fa-solid fa-copy"></i> NIS Duplikat</div>
+            <div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Baris Excel</th><th>NIS</th><th>Nama</th><th>Keterangan</th></tr></thead><tbody>
+                @foreach($importSummary['duplicates'] as $duplicate)
+                    <tr><td>{{ $duplicate['row'] }}</td><td><code>{{ $duplicate['nis'] }}</code></td><td>{{ $duplicate['name'] ?: '-' }}</td><td>{{ $duplicate['reason'] }}</td></tr>
+                @endforeach
+            </tbody></table></div>
+        </div>
+        @endif
+
+        @if(count($importSummary['failed'] ?? []) > 0)
+        <div style="margin-top:16px; border:1px solid #fecaca; border-radius:10px; overflow:hidden;">
+            <div style="padding:13px 16px; background:#fef2f2; color:#991b1b; font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> Data Tidak Berhasil Diimport</div>
+            <div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Baris Excel</th><th>NIS</th><th>Nama</th><th>Alasan</th></tr></thead><tbody>
+                @foreach($importSummary['failed'] as $failure)
+                    <tr><td>{{ $failure['row'] }}</td><td><code>{{ $failure['nis'] ?: '-' }}</code></td><td>{{ $failure['name'] ?: '-' }}</td><td>{{ $failure['reason'] }}</td></tr>
+                @endforeach
+            </tbody></table></div>
+        </div>
+        @endif
+    </div>
+</div>
+@endif
+
 <!-- Modal Tambah Data -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
