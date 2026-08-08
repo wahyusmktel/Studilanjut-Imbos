@@ -104,6 +104,9 @@ class AdminFilesController extends Controller
             return response()->json(['message' => 'Nomor chunk tidak valid.'], 422);
         }
 
+        $chunkIndex = (int) $validated['chunk_index'];
+        $totalChunks = (int) $validated['total_chunks'];
+
         $path = $this->normalizePath($validated['path'] ?? '');
         abort_if($path === null, 404);
 
@@ -111,7 +114,7 @@ class AdminFilesController extends Controller
         abort_unless($path === '' || $disk->directoryExists($path), 404);
 
         $storedName = $this->safeFilename($validated['stored_name'] ?? $validated['filename']);
-        if ($validated['chunk_index'] === 0 && $disk->exists(trim($path.'/'.$storedName, '/'))) {
+        if ($chunkIndex === 0 && $disk->exists(trim($path.'/'.$storedName, '/'))) {
             $storedName = pathinfo($storedName, PATHINFO_FILENAME)
                 .'-'.now()->format('YmdHis')
                 .'.'.strtolower(pathinfo($storedName, PATHINFO_EXTENSION));
@@ -121,19 +124,19 @@ class AdminFilesController extends Controller
         $local->makeDirectory('file-uploads');
         $temporaryPath = 'file-uploads/'.$validated['upload_id'].'.part';
 
-        if ($validated['chunk_index'] === 0) {
+        if ($chunkIndex === 0) {
             $local->delete($temporaryPath);
         } elseif (! $local->exists($temporaryPath)) {
             return response()->json(['message' => 'Chunk pertama belum diterima. Silakan ulangi upload.'], 422);
         }
 
         $source = fopen($request->file('chunk')->getRealPath(), 'rb');
-        $destination = fopen($local->path($temporaryPath), $validated['chunk_index'] === 0 ? 'wb' : 'ab');
+        $destination = fopen($local->path($temporaryPath), $chunkIndex === 0 ? 'wb' : 'ab');
         stream_copy_to_stream($source, $destination);
         fclose($source);
         fclose($destination);
 
-        $isLastChunk = $validated['total_chunks'] === $validated['chunk_index'] + 1;
+        $isLastChunk = $chunkIndex + 1 === $totalChunks;
         if (! $isLastChunk) {
             return response()->json(['complete' => false, 'stored_name' => $storedName]);
         }
