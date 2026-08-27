@@ -76,7 +76,7 @@
 
         <div class="stat-card gradient-4" style="border-radius: var(--radius-md); padding: 20px;">
             <div class="stat-card-content">
-                <span class="stat-card-label" style="opacity: 0.9;">Total Tidak Hadir</span>
+                <span class="stat-card-label" style="opacity: 0.9;">Total Alpa</span>
                 <span class="stat-card-value" style="font-size: 32px; font-weight: 700;">{{ $absensiDetails->where('kehadiran', 0)->count() }}</span>
             </div>
             <div class="stat-card-icon" style="font-size: 32px; opacity: 0.8;">
@@ -92,6 +92,14 @@
             <div class="stat-card-icon" style="font-size: 32px; opacity: 0.8;">
                 <i class="fa-solid fa-user-doctor"></i>
             </div>
+        </div>
+
+        <div class="stat-card gradient-1" style="border-radius: var(--radius-md); padding: 20px;">
+            <div class="stat-card-content">
+                <span class="stat-card-label" style="opacity: 0.9;">Total Pulang</span>
+                <span class="stat-card-value" style="font-size: 32px; font-weight: 700;">{{ $absensiDetails->where('kehadiran', 3)->count() }}</span>
+            </div>
+            <div class="stat-card-icon" style="font-size: 32px; opacity: 0.8;"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
         </div>
     </div>
 </div>
@@ -163,9 +171,11 @@
                                 @if($detail->kehadiran == 1)
                                     <span class="badge-modern success"><i class="fa-solid fa-circle-check mr-1"></i> Hadir</span>
                                 @elseif($detail->kehadiran == 0)
-                                    <span class="badge-modern danger"><i class="fa-solid fa-circle-xmark mr-1"></i> Tidak Hadir</span>
+                                    <span class="badge-modern danger"><i class="fa-solid fa-circle-xmark mr-1"></i> Alpa</span>
                                 @elseif($detail->kehadiran == 2)
                                     <span class="badge-modern warning"><i class="fa-solid fa-user-doctor mr-1"></i> Sakit</span>
+                                @elseif($detail->kehadiran == 3)
+                                    <span class="badge-modern info"><i class="fa-solid fa-person-walking-arrow-right mr-1"></i> Pulang</span>
                                 @endif
                             </td>
                         </tr>
@@ -214,15 +224,16 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Hadir', 'Tidak Hadir', 'Sakit'],
+                labels: ['Hadir', 'Alpa', 'Sakit', 'Pulang'],
                 datasets: [{
                     label: 'Jumlah Kehadiran',
                     data: [
                         {{ $absensiDetails->where('kehadiran', 1)->count() }},
                         {{ $absensiDetails->where('kehadiran', 0)->count() }},
                         {{ $absensiDetails->where('kehadiran', 2)->count() }}
+                        ,{{ $absensiDetails->where('kehadiran', 3)->count() }}
                     ],
-                    backgroundColor: [gradientHadir, gradientTidakHadir, gradientSakit],
+                    backgroundColor: [gradientHadir, gradientTidakHadir, gradientSakit, '#6366f1'],
                     borderRadius: 10,
                     borderSkipped: false,
                     barThickness: 42

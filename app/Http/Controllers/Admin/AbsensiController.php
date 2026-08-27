@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\AbsensiDetailExport;
+use App\Exports\AbsensiExport;
 use App\Http\Controllers\Controller;
 use App\Models\AbsensiDetail;
-use App\Models\MataPelajaran;
 use App\Models\Kelas;
+use App\Models\MataPelajaran;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\AbsensiExport;
-use App\Models\Siswa;
-use App\Exports\AbsensiDetailExport;
 
 class AbsensiController extends Controller
 {
@@ -52,7 +52,7 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'id' => 'required|exists:absensi_details,id',
-            'kehadiran' => 'required|in:0,1,2',
+            'kehadiran' => 'required|in:0,1,2,3',
         ]);
 
         $absensiDetail = AbsensiDetail::findOrFail($request->id);

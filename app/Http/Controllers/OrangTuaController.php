@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Siswa;
-use App\Models\Nilai;
+use App\Models\AbsensiDetail;
+use App\Models\Kelas;
 use App\Models\MataPelajaran;
+use App\Models\Nilai;
 use App\Models\SertifikatPerkembangan;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SertifikatTryout;
 use App\Models\SettingSertifikat;
-use App\Models\AbsensiDetail;
+use App\Models\Siswa;
 use App\Models\TahunPelajaran;
-use App\Models\Kelas;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
 class OrangTuaController extends Controller
@@ -119,13 +118,13 @@ class OrangTuaController extends Controller
     {
         $siswa = Siswa::with('kelas', 'programBimbel')->findOrFail($id);
 
-        if (!$siswa->kelas) {
+        if (! $siswa->kelas) {
             return redirect()->back()->with('error', 'Siswa tidak terdaftar di kelas manapun.');
         }
 
         $tahunPelajaranAktif = TahunPelajaran::where('status', true)->first();
 
-        if (!$tahunPelajaranAktif) {
+        if (! $tahunPelajaranAktif) {
             return redirect()->back()->with('error', 'Tidak ada Tahun Pelajaran yang aktif.');
         }
 
@@ -170,7 +169,7 @@ class OrangTuaController extends Controller
         $pdf = Pdf::loadView('sertifikat_orang_tua', compact('siswa', 'nilai', 'mataPelajaransFalse', 'mataPelajaransTrue', 'sertifikatperkembangan', 'statusKedinasan', 'mataPelajarans', 'settingSertifikat'))
             ->setPaper('a4', 'landscape');
 
-        $fileName = 'Rapor_Perkembangan_' . str_replace(' ', '_', $siswa->nama_siswa) . '_' . date('Ymd_His') . '.pdf';
+        $fileName = 'Rapor_Perkembangan_'.str_replace(' ', '_', $siswa->nama_siswa).'_'.date('Ymd_His').'.pdf';
 
         return $pdf->download($fileName);
     }
@@ -181,7 +180,7 @@ class OrangTuaController extends Controller
             $query->where('tryout_id', $tryout_id)->with('mataPelajaran', 'tryout.tahunPelajaran');
         }])->findOrFail($id);
 
-        if (!$siswa->kelas) {
+        if (! $siswa->kelas) {
             return redirect()->back()->with('error', 'Siswa tidak terdaftar di kelas manapun.');
         }
 
@@ -213,10 +212,10 @@ class OrangTuaController extends Controller
 
         $src = null;
         if ($siswa->foto_siswa && Storage::disk('public')->exists($siswa->foto_siswa)) {
-            $imagePath = storage_path('app/public/' . $siswa->foto_siswa);
+            $imagePath = storage_path('app/public/'.$siswa->foto_siswa);
             try {
                 $imageData = base64_encode(file_get_contents($imagePath));
-                $src = 'data:image/png;base64,' . $imageData;
+                $src = 'data:image/png;base64,'.$imageData;
             } catch (\Exception $e) {
                 // Biarkan $src null jika file tidak bisa dibaca
             }
@@ -226,7 +225,7 @@ class OrangTuaController extends Controller
             ->setPaper('a4', 'landscape');
 
         $tryoutName = $nilai->first()->first()->tryout?->nama_tryout ?? 'Tryout';
-        $filename = 'Sertifikat_' . str_replace(' ', '_', $siswa->nama_siswa) . '_' . str_replace(' ', '_', $tryoutName) . '_' . date('Ymd_His') . '.pdf';
+        $filename = 'Sertifikat_'.str_replace(' ', '_', $siswa->nama_siswa).'_'.str_replace(' ', '_', $tryoutName).'_'.date('Ymd_His').'.pdf';
 
         return $pdf->download($filename);
     }
@@ -234,7 +233,6 @@ class OrangTuaController extends Controller
     // public function downloadSertifikat(Request $request, $id)
     // {
     //     $siswa = Siswa::with(['kelas', 'nilais.mataPelajaran', 'nilais.tryout.tahunPelajaran'])->findOrFail($id);
-
 
     //     // $mataPelajarans = MataPelajaran::all();
 
@@ -353,6 +351,7 @@ class OrangTuaController extends Controller
         if (Auth::guard('parent')->check()) {
             return redirect()->route('orang_tua.index');
         }
+
         return view('orang_tua');
     }
 
@@ -371,6 +370,7 @@ class OrangTuaController extends Controller
     public function logout(Request $request)
     {
         Auth::guard('parent')->logout();
+
         return redirect()->route('parent.login');
     }
 
@@ -410,6 +410,7 @@ class OrangTuaController extends Controller
         $hadirCount = (clone $totalQuery)->where('kehadiran', 1)->count();
         $tidakHadirCount = (clone $totalQuery)->where('kehadiran', 0)->count();
         $sakitCount = (clone $totalQuery)->where('kehadiran', 2)->count();
+        $pulangCount = (clone $totalQuery)->where('kehadiran', 3)->count();
         $absensiDetails = $query->paginate(10);
 
         $mataPelajarans = collect();
@@ -424,7 +425,7 @@ class OrangTuaController extends Controller
             }
         }
 
-        return view('detail_absensi', compact('absensiDetails', 'siswa', 'mataPelajarans', 'request', 'hadirCount', 'tidakHadirCount', 'sakitCount', 'tahunPelajaranAktif'));
+        return view('detail_absensi', compact('absensiDetails', 'siswa', 'mataPelajarans', 'request', 'hadirCount', 'tidakHadirCount', 'sakitCount', 'pulangCount', 'tahunPelajaranAktif'));
     }
 
     // public function detailAbsensi(Request $request)

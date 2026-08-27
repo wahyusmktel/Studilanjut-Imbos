@@ -944,6 +944,8 @@
 
                                             <input type="radio" id="sakit${index}" name="kehadiran[${siswa.id}]" value="2" required>
                                             <label for="sakit${index}" class="attendance-pill-label">Sakit</label>
+                                            <input type="radio" id="pulang${index}" name="kehadiran[${siswa.id}]" value="3" required>
+                                            <label for="pulang${index}" class="attendance-pill-label">Pulang</label>
                                         </div>
                                     </td>
                                 `;
@@ -998,6 +1000,8 @@
 
                                 <input type="radio" id="sakit${index}" name="kehadiran[${siswaId}]" value="2" required>
                                 <label for="sakit${index}" class="attendance-pill-label">Sakit</label>
+                                <input type="radio" id="pulang${index}" name="kehadiran[${siswaId}]" value="3" required>
+                                <label for="pulang${index}" class="attendance-pill-label">Pulang</label>
                             </div>
                         </td>
                     `;

@@ -97,7 +97,17 @@
                                 <div class="panel panel-default border-panel card-view">
                                     <div class="panel-body">
                                         <div class="text-center">
-                                            <h4 class="txt-dark">Jumlah Ketidakhadiran</h4>
+                                            <h4 class="txt-dark">Jumlah Pulang</h4>
+                                            <h2>{{ $pulangCount }}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="panel panel-default border-panel card-view">
+                                    <div class="panel-body">
+                                        <div class="text-center">
+                                            <h4 class="txt-dark">Jumlah Alpa</h4>
                                             <h2>{{ $tidakHadirCount }}</h2>
                                         </div>
                                     </div>
@@ -156,9 +166,11 @@
                                                         @if ($detail->kehadiran == 1)
                                                             Hadir
                                                         @elseif($detail->kehadiran == 0)
-                                                            Tidak Hadir
+                                                            Alpa
                                                         @elseif($detail->kehadiran == 2)
                                                             Sakit
+                                                        @elseif($detail->kehadiran == 3)
+                                                            Pulang
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center">
@@ -263,6 +275,13 @@
                         backgroundColor: 'rgba(255, 206, 86, 0.2)', // Warna background bar untuk sakit
                         borderColor: 'rgba(255, 206, 86, 1)', // Warna border bar untuk sakit
                         borderWidth: 1 // Ketebalan border bar
+                    },
+                    {
+                        label: 'Pulang',
+                        data: [{{ $pulangCount }}],
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        borderWidth: 1
                     }
                 ]
             },

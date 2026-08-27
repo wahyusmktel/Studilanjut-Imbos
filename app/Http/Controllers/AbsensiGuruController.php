@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Absensi;
+use App\Models\AbsensiDetail;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Siswa;
-use App\Models\Absensi;
-use App\Models\AbsensiDetail;
 use App\Models\TahunPelajaran;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,6 +35,7 @@ class AbsensiGuruController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10204',
             'siswa_id' => 'required|array',
             'kehadiran' => 'required|array',
+            'kehadiran.*' => 'required|in:0,1,2,3',
         ]);
 
         // --- MULAI PERUBAHAN ---
@@ -42,7 +43,7 @@ class AbsensiGuruController extends Controller
         $tahunAktif = TahunPelajaran::where('status', 1)->first();
 
         // 2. Jika tidak ada yang aktif, kembalikan dengan pesan error
-        if (!$tahunAktif) {
+        if (! $tahunAktif) {
             return redirect()->back()->with('error', 'Gagal menyimpan. Tidak ada Tahun Pelajaran yang aktif.');
         }
 
@@ -72,6 +73,7 @@ class AbsensiGuruController extends Controller
     public function getSiswaByKelas(Request $request)
     {
         $siswa = Siswa::where('kelas_id', $request->kelas_id)->get();
+
         return response()->json($siswa);
     }
 
@@ -87,10 +89,10 @@ class AbsensiGuruController extends Controller
         if ($request->hasFile('foto_sampul')) {
             // Hapus foto sampul lama jika ada
             if ($guru->foto_sampul) {
-                Storage::delete('public/foto_sampul_guru/' . $guru->foto_sampul);
+                Storage::delete('public/foto_sampul_guru/'.$guru->foto_sampul);
             }
 
-            $fileName = time() . '.' . $request->foto_sampul->extension();
+            $fileName = time().'.'.$request->foto_sampul->extension();
             $request->foto_sampul->storeAs('public/foto_sampul_guru', $fileName);
             $guru->foto_sampul = $fileName;
             $guru->save();
