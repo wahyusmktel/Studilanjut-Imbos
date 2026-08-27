@@ -257,6 +257,12 @@
         border-color: #fde047;
     }
 
+    .attendance-pills input[value="3"]:checked + label {
+        background: #e0e7ff;
+        color: #4338ca;
+        border-color: #a5b4fc;
+    }
+
     .btn-imbos-submit {
         background: linear-gradient(135deg, #25477d 0%, #1e3a8a 100%);
         color: #ffffff;
