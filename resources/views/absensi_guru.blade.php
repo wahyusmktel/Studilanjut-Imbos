@@ -281,13 +281,39 @@
 
     .attendance-table-wrapper {
         border-radius: 16px;
-        overflow: hidden;
+        overflow-x: auto;
+        overflow-y: hidden;
         border: 1px solid #e2e8f0;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #94a3b8 #f1f5f9;
+    }
+
+    .attendance-table-wrapper::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .attendance-table-wrapper::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 999px;
+    }
+
+    .attendance-table-wrapper::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 999px;
+    }
+
+    .attendance-scroll-hint {
+        display: none;
+        margin: -4px 0 8px;
+        color: #64748b;
+        font-size: 0.75rem;
     }
 
     .table-attendance {
         margin-bottom: 0;
+        min-width: 620px;
     }
 
     .table-attendance thead {
@@ -308,6 +334,32 @@
         padding: 12px 16px;
         vertical-align: middle;
         font-size: 0.9rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .attendance-scroll-hint {
+            display: block;
+        }
+
+        .attendance-table-wrapper {
+            margin-right: -4px;
+            border-radius: 12px;
+        }
+
+        .table-attendance th,
+        .table-attendance td {
+            white-space: nowrap;
+        }
+
+        .table-attendance th:nth-child(2),
+        .table-attendance td:nth-child(2) {
+            min-width: 190px;
+        }
+
+        .table-attendance th:nth-child(3),
+        .table-attendance td:nth-child(3) {
+            min-width: 250px;
+        }
     }
 
     @media (max-width: 991px) {
@@ -593,6 +645,7 @@
                             </button>
                         </div>
 
+                        <div class="attendance-scroll-hint"><i class="bi bi-arrows-expand-horizontal me-1"></i> Geser tabel ke kiri/kanan untuk melihat seluruh data</div>
                         <div class="attendance-table-wrapper">
                             <table class="table table-attendance align-middle">
                                 <thead>
