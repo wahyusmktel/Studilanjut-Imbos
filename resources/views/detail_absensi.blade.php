@@ -169,6 +169,8 @@
                                                             Alpa
                                                         @elseif($detail->kehadiran == 2)
                                                             Sakit
+                                                        @elseif($detail->kehadiran == 4)
+                                                            Izin
                                                         @elseif($detail->kehadiran == 3)
                                                             Pulang
                                                         @endif

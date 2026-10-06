@@ -35,6 +35,8 @@
                         Tidak Hadir
                     @elseif($detail->kehadiran == 2)
                         Sakit
+                    @elseif($detail->kehadiran == 4)
+                        Izin
                     @elseif($detail->kehadiran == 3)
                         Pulang
                     @else
@@ -48,6 +50,7 @@
     <p>Jumlah Kehadiran: {{ $absensiDetails->where('kehadiran', 1)->count() }}</p>
     <p>Jumlah Ketidakhadiran: {{ $absensiDetails->where('kehadiran', 0)->count() }}</p>
     <p>Jumlah Sakit: {{ $absensiDetails->where('kehadiran', 2)->count() }}</p>
+    <p>Jumlah Izin: {{ $absensiDetails->where('kehadiran', 4)->count() }}</p>
     <p>Jumlah Pulang: {{ $absensiDetails->where('kehadiran', 3)->count() }}</p>
 </body>
 </html>

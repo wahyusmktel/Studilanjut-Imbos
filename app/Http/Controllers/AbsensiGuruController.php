@@ -35,7 +35,7 @@ class AbsensiGuruController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10204',
             'siswa_id' => 'required|array',
             'kehadiran' => 'required|array',
-            'kehadiran.*' => 'required|in:0,1,2,3',
+            'kehadiran.*' => 'required|in:0,1,2,3,4',
         ]);
 
         // --- MULAI PERUBAHAN ---

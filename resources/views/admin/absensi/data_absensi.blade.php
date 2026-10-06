@@ -115,11 +115,13 @@
                                 @if ($detail->kehadiran == 1)
                                     <span class="badge-modern success"><i class="fa-solid fa-circle-check mr-1"></i> Hadir</span>
                                 @elseif($detail->kehadiran == 0)
-                                <span class="badge-modern danger"><i class="fa-solid fa-circle-xmark mr-1"></i> Alpa</span>
-                            @elseif($detail->kehadiran == 2)
-                                <span class="badge-modern warning"><i class="fa-solid fa-user-doctor mr-1"></i> Sakit</span>
-                            @elseif($detail->kehadiran == 3)
-                                <span class="badge-modern info"><i class="fa-solid fa-person-walking-arrow-right mr-1"></i> Pulang</span>
+                                    <span class="badge-modern danger"><i class="fa-solid fa-circle-xmark mr-1"></i> Alpa</span>
+                                @elseif($detail->kehadiran == 2)
+                                    <span class="badge-modern warning"><i class="fa-solid fa-user-doctor mr-1"></i> Sakit</span>
+                                @elseif($detail->kehadiran == 4)
+                                    <span class="badge-modern primary" style="background: #e0f2fe; color: #0369a1;"><i class="fa-solid fa-envelope-open-text mr-1"></i> Izin</span>
+                                @elseif($detail->kehadiran == 3)
+                                    <span class="badge-modern info"><i class="fa-solid fa-person-walking-arrow-right mr-1"></i> Pulang</span>
                                 @endif
                             </td>
                             <td class="text-center" style="white-space: nowrap; vertical-align: middle;">
@@ -187,8 +189,9 @@
                         <label for="editKehadiran" class="font-weight-600">Status Kehadiran</label>
                         <select class="form-control" id="editKehadiran" name="kehadiran" required>
                             <option value="1">Hadir</option>
-                            <option value="0">Alpa</option>
                             <option value="2">Sakit</option>
+                            <option value="0">Alpa</option>
+                            <option value="4">Izin</option>
                             <option value="3">Pulang</option>
                         </select>
                     </div>

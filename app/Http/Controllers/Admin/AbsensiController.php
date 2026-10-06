@@ -52,7 +52,7 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'id' => 'required|exists:absensi_details,id',
-            'kehadiran' => 'required|in:0,1,2,3',
+            'kehadiran' => 'required|in:0,1,2,3,4',
         ]);
 
         $absensiDetail = AbsensiDetail::findOrFail($request->id);

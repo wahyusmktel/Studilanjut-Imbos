@@ -94,6 +94,16 @@
             </div>
         </div>
 
+        <div class="stat-card" style="border-radius: var(--radius-md); padding: 20px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: #fff;">
+            <div class="stat-card-content">
+                <span class="stat-card-label" style="opacity: 0.9;">Total Izin</span>
+                <span class="stat-card-value" style="font-size: 32px; font-weight: 700;">{{ $absensiDetails->where('kehadiran', 4)->count() }}</span>
+            </div>
+            <div class="stat-card-icon" style="font-size: 32px; opacity: 0.8;">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+        </div>
+
         <div class="stat-card gradient-1" style="border-radius: var(--radius-md); padding: 20px;">
             <div class="stat-card-content">
                 <span class="stat-card-label" style="opacity: 0.9;">Total Pulang</span>
@@ -174,6 +184,8 @@
                                     <span class="badge-modern danger"><i class="fa-solid fa-circle-xmark mr-1"></i> Alpa</span>
                                 @elseif($detail->kehadiran == 2)
                                     <span class="badge-modern warning"><i class="fa-solid fa-user-doctor mr-1"></i> Sakit</span>
+                                @elseif($detail->kehadiran == 4)
+                                    <span class="badge-modern primary" style="background: #e0f2fe; color: #0369a1;"><i class="fa-solid fa-envelope-open-text mr-1"></i> Izin</span>
                                 @elseif($detail->kehadiran == 3)
                                     <span class="badge-modern info"><i class="fa-solid fa-person-walking-arrow-right mr-1"></i> Pulang</span>
                                 @endif
@@ -221,19 +233,24 @@
         gradientSakit.addColorStop(0, '#f59e0b');
         gradientSakit.addColorStop(1, '#d97706');
 
+        const gradientIzin = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientIzin.addColorStop(0, '#0ea5e9');
+        gradientIzin.addColorStop(1, '#0284c7');
+
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Hadir', 'Alpa', 'Sakit', 'Pulang'],
+                labels: ['Hadir', 'Sakit', 'Alpa', 'Izin', 'Pulang'],
                 datasets: [{
                     label: 'Jumlah Kehadiran',
                     data: [
                         {{ $absensiDetails->where('kehadiran', 1)->count() }},
+                        {{ $absensiDetails->where('kehadiran', 2)->count() }},
                         {{ $absensiDetails->where('kehadiran', 0)->count() }},
-                        {{ $absensiDetails->where('kehadiran', 2)->count() }}
-                        ,{{ $absensiDetails->where('kehadiran', 3)->count() }}
+                        {{ $absensiDetails->where('kehadiran', 4)->count() }},
+                        {{ $absensiDetails->where('kehadiran', 3)->count() }}
                     ],
-                    backgroundColor: [gradientHadir, gradientTidakHadir, gradientSakit, '#6366f1'],
+                    backgroundColor: [gradientHadir, gradientSakit, gradientTidakHadir, gradientIzin, '#6366f1'],
                     borderRadius: 10,
                     borderSkipped: false,
                     barThickness: 42

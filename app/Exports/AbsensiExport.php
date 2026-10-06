@@ -34,6 +34,8 @@ class AbsensiExport implements FromCollection, WithColumnWidths, WithCustomStart
 
     protected $totalSakit = 0;
 
+    protected $totalIzin = 0;
+
     protected $totalPulang = 0;
 
     public function __construct($startDate, $endDate, $mataPelajaranId, $kelasId)
@@ -75,6 +77,8 @@ class AbsensiExport implements FromCollection, WithColumnWidths, WithCustomStart
                 $this->totalTidakHadir++;
             } elseif ($detail->kehadiran == 2) {
                 $this->totalSakit++;
+            } elseif ($detail->kehadiran == 4) {
+                $this->totalIzin++;
             } elseif ($detail->kehadiran == 3) {
                 $this->totalPulang++;
             }
@@ -85,7 +89,7 @@ class AbsensiExport implements FromCollection, WithColumnWidths, WithCustomStart
                 'Mata Pelajaran' => $detail->absensi->guru->mataPelajaran->namaMataPelajaran,
                 'Guru' => $detail->absensi->guru->nama,
                 'Tanggal' => Carbon::parse($detail->absensi->tanggal)->format('d-m-Y'),
-                'Kehadiran' => $detail->kehadiran == 1 ? 'Hadir' : ($detail->kehadiran == 0 ? 'Alpa' : ($detail->kehadiran == 2 ? 'Sakit' : 'Pulang')),
+                'Kehadiran' => $detail->kehadiran == 1 ? 'Hadir' : ($detail->kehadiran == 0 ? 'Alpa' : ($detail->kehadiran == 2 ? 'Sakit' : ($detail->kehadiran == 4 ? 'Izin' : 'Pulang'))),
             ];
         });
 
@@ -256,10 +260,27 @@ class AbsensiExport implements FromCollection, WithColumnWidths, WithCustomStart
                     ],
                 ]);
 
-                // Add pulang summary row
-                $sheet->setCellValue('A'.($lastRow + 3), 'Jumlah Pulang: '.$this->totalPulang);
+                // Add izin summary row
+                $sheet->setCellValue('A'.($lastRow + 3), 'Jumlah Izin: '.$this->totalIzin);
                 $sheet->mergeCells('A'.($lastRow + 3).':F'.($lastRow + 3));
                 $sheet->getStyle('A'.($lastRow + 3).':F'.($lastRow + 3))->applyFromArray([
+                    'font' => ['bold' => true],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
+                    'borders' => [
+                        'top' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+
+                // Add pulang summary row
+                $sheet->setCellValue('A'.($lastRow + 4), 'Jumlah Pulang: '.$this->totalPulang);
+                $sheet->mergeCells('A'.($lastRow + 4).':F'.($lastRow + 4));
+                $sheet->getStyle('A'.($lastRow + 4).':F'.($lastRow + 4))->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,

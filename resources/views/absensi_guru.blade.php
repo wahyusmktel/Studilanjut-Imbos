@@ -218,7 +218,7 @@
     /* Radio Status Pills for Attendance */
     .attendance-pills {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         align-items: center;
     }
 
@@ -227,40 +227,65 @@
     }
 
     .attendance-pill-label {
-        font-size: 0.78rem;
-        font-weight: 700;
-        padding: 6px 14px;
-        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        width: 34px;
+        height: 34px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
         cursor: pointer;
-        border: 1px solid #cbd5e1;
+        border: 1.5px solid #cbd5e1;
         background: #f8fafc;
         color: #64748b;
         transition: all 0.2s ease;
         user-select: none;
     }
 
+    .attendance-pill-label:hover {
+        border-color: #94a3b8;
+        transform: translateY(-1px);
+    }
+
+    /* H = Hadir (1) */
     .attendance-pills input[value="1"]:checked + label {
         background: #dcfce7;
         color: #15803d;
         border-color: #86efac;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.2);
     }
 
-    .attendance-pills input[value="0"]:checked + label {
-        background: #fee2e2;
-        color: #b91c1c;
-        border-color: #fca5a5;
-    }
-
+    /* S = Sakit (2) */
     .attendance-pills input[value="2"]:checked + label {
         background: #fef3c7;
         color: #b45309;
         border-color: #fde047;
+        box-shadow: 0 2px 6px rgba(217, 119, 6, 0.2);
     }
 
+    /* A = Alpa (0) */
+    .attendance-pills input[value="0"]:checked + label {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-color: #fca5a5;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+    }
+
+    /* I = Izin (4) */
+    .attendance-pills input[value="4"]:checked + label {
+        background: #e0f2fe;
+        color: #0369a1;
+        border-color: #7dd3fc;
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2);
+    }
+
+    /* P = Pulang (3) */
     .attendance-pills input[value="3"]:checked + label {
         background: #e0e7ff;
         color: #4338ca;
         border-color: #a5b4fc;
+        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
     }
 
     .btn-imbos-submit {
@@ -641,7 +666,7 @@
 
                     <!-- Right Column: Student Attendance Table -->
                     <div class="col-lg-7">
-                        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
                             <h5 class="fw-bold text-dark mb-0 fs-6">
                                 <i class="bi bi-person-check-fill text-primary me-1"></i>
                                 Daftar Kehadiran Siswa
@@ -651,6 +676,16 @@
                             </button>
                         </div>
 
+                        <!-- Keterangan Singkatan Kehadiran -->
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-3 p-2 bg-white rounded-3 border small">
+                            <span class="fw-bold text-muted me-1"><i class="bi bi-info-circle me-1"></i>Keterangan:</span>
+                            <span class="badge" style="background: #dcfce7; color: #15803d; border: 1px solid #86efac; font-weight: 700;"><strong>H</strong> = Hadir</span>
+                            <span class="badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde047; font-weight: 700;"><strong>S</strong> = Sakit</span>
+                            <span class="badge" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-weight: 700;"><strong>A</strong> = Alpa / Tanpa Keterangan</span>
+                            <span class="badge" style="background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; font-weight: 700;"><strong>I</strong> = Izin</span>
+                            <span class="badge" style="background: #e0e7ff; color: #4338ca; border: 1px solid #a5b4fc; font-weight: 700;"><strong>P</strong> = Pulang</span>
+                        </div>
+
                         <div class="attendance-scroll-hint"><i class="bi bi-arrows-expand-horizontal me-1"></i> Geser tabel ke kiri/kanan untuk melihat seluruh data</div>
                         <div class="attendance-table-wrapper">
                             <table class="table table-attendance align-middle">
@@ -658,7 +693,7 @@
                                     <tr>
                                         <th style="width: 50px;">No</th>
                                         <th>Nama Siswa</th>
-                                        <th style="width: 250px;">Kehadiran</th>
+                                        <th style="width: 230px;" class="text-center">Kehadiran</th>
                                     </tr>
                                 </thead>
                                 <tbody id="siswa-table-body">
@@ -938,20 +973,24 @@
                                     tr.innerHTML = `
                                     <td class="fw-bold text-secondary">${index + 1}</td>
                                     <td><span class="fw-bold text-dark">${siswa.nama_siswa}</span></td>
-                                    <td>
-                                        <div class="attendance-pills">
+                                    <td class="text-center">
+                                        <div class="attendance-pills justify-content-center">
                                             <input type="hidden" name="siswa_id[]" value="${siswa.id}">
                                             
-                                            <input type="radio" id="hadir${index}" name="kehadiran[${siswa.id}]" value="1" required>
-                                            <label for="hadir${index}" class="attendance-pill-label">Hadir</label>
+                                            <input type="radio" id="hadir_${siswa.id}" name="kehadiran[${siswa.id}]" value="1" required>
+                                            <label for="hadir_${siswa.id}" class="attendance-pill-label" title="Hadir (H)">H</label>
 
-                                            <input type="radio" id="tidak_hadir${index}" name="kehadiran[${siswa.id}]" value="0" required>
-                                            <label for="tidak_hadir${index}" class="attendance-pill-label">Alpa</label>
+                                            <input type="radio" id="sakit_${siswa.id}" name="kehadiran[${siswa.id}]" value="2" required>
+                                            <label for="sakit_${siswa.id}" class="attendance-pill-label" title="Sakit (S)">S</label>
 
-                                            <input type="radio" id="sakit${index}" name="kehadiran[${siswa.id}]" value="2" required>
-                                            <label for="sakit${index}" class="attendance-pill-label">Sakit</label>
-                                            <input type="radio" id="pulang${index}" name="kehadiran[${siswa.id}]" value="3" required>
-                                            <label for="pulang${index}" class="attendance-pill-label">Pulang</label>
+                                            <input type="radio" id="tidak_hadir_${siswa.id}" name="kehadiran[${siswa.id}]" value="0" required>
+                                            <label for="tidak_hadir_${siswa.id}" class="attendance-pill-label" title="Alpa / Tanpa Keterangan (A)">A</label>
+
+                                            <input type="radio" id="izin_${siswa.id}" name="kehadiran[${siswa.id}]" value="4" required>
+                                            <label for="izin_${siswa.id}" class="attendance-pill-label" title="Izin (I)">I</label>
+
+                                            <input type="radio" id="pulang_${siswa.id}" name="kehadiran[${siswa.id}]" value="3" required>
+                                            <label for="pulang_${siswa.id}" class="attendance-pill-label" title="Pulang (P)">P</label>
                                         </div>
                                     </td>
                                 `;
@@ -994,20 +1033,24 @@
                     tr.innerHTML = `
                         <td class="fw-bold text-secondary">${index}</td>
                         <td><span class="fw-bold text-dark">${siswaText.split(' - ')[0]}</span></td>
-                        <td>
-                            <div class="attendance-pills">
+                        <td class="text-center">
+                            <div class="attendance-pills justify-content-center">
                                 <input type="hidden" name="siswa_id[]" value="${siswaId}">
                                 
-                                <input type="radio" id="hadir${index}" name="kehadiran[${siswaId}]" value="1" required>
-                                <label for="hadir${index}" class="attendance-pill-label">Hadir</label>
+                                <input type="radio" id="hadir_${siswaId}" name="kehadiran[${siswaId}]" value="1" required>
+                                <label for="hadir_${siswaId}" class="attendance-pill-label" title="Hadir (H)">H</label>
 
-                                <input type="radio" id="tidak_hadir${index}" name="kehadiran[${siswaId}]" value="0" required>
-                                <label for="tidak_hadir${index}" class="attendance-pill-label">Alpa</label>
+                                <input type="radio" id="sakit_${siswaId}" name="kehadiran[${siswaId}]" value="2" required>
+                                <label for="sakit_${siswaId}" class="attendance-pill-label" title="Sakit (S)">S</label>
 
-                                <input type="radio" id="sakit${index}" name="kehadiran[${siswaId}]" value="2" required>
-                                <label for="sakit${index}" class="attendance-pill-label">Sakit</label>
-                                <input type="radio" id="pulang${index}" name="kehadiran[${siswaId}]" value="3" required>
-                                <label for="pulang${index}" class="attendance-pill-label">Pulang</label>
+                                <input type="radio" id="tidak_hadir_${siswaId}" name="kehadiran[${siswaId}]" value="0" required>
+                                <label for="tidak_hadir_${siswaId}" class="attendance-pill-label" title="Alpa / Tanpa Keterangan (A)">A</label>
+
+                                <input type="radio" id="izin_${siswaId}" name="kehadiran[${siswaId}]" value="4" required>
+                                <label for="izin_${siswaId}" class="attendance-pill-label" title="Izin (I)">I</label>
+
+                                <input type="radio" id="pulang_${siswaId}" name="kehadiran[${siswaId}]" value="3" required>
+                                <label for="pulang_${siswaId}" class="attendance-pill-label" title="Pulang (P)">P</label>
                             </div>
                         </td>
                     `;
