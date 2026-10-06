@@ -29,12 +29,13 @@ echo -e "${YELLOW}[2/8] Mengaktifkan Maintenance Mode...${NC}"
 php artisan down || true
 
 # 3. Pull Update Terbaru dari Repository Git
-echo -e "${YELLOW}[3/8] Menarik update dari Git (git pull)...${NC}"
-git pull origin main
+echo -e "${YELLOW}[3/8] Menarik update dari Git (git fetch & reset)...${NC}"
+git fetch origin main
+git reset --hard origin/main
 
 # 4. Install / Update Dependensi Composer
 echo -e "${YELLOW}[4/8] Memasang dependensi Composer...${NC}"
-composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader --no-interaction
 
 # 5. Menjalankan Migrasi Database
 echo -e "${YELLOW}[5/8] Menjalankan migrasi database...${NC}"
@@ -43,11 +44,7 @@ php artisan migrate --force
 # 6. Menghubungkan Storage Symlink & Optimasi Cache
 echo -e "${YELLOW}[6/8] Memperbarui dan mengoptimalkan cache Laravel...${NC}"
 php artisan storage:link || true
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
-
+php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
@@ -59,8 +56,10 @@ php artisan up || sudo php artisan up
 
 # 8. Memastikan Hak Akses Akhir Sempurna
 echo -e "${YELLOW}[8/8] Memastikan hak akses akhir (permissions)...${NC}"
+CURRENT_USER=${SUDO_USER:-$USER}
 sudo chown -R $CURRENT_USER:www-data storage bootstrap/cache
 sudo chmod -R 775 storage bootstrap/cache
+sudo systemctl reload php8.4-fpm || true
 
 echo -e "${GREEN}====================================================${NC}"
 echo -e "${GREEN}  DEPLOYMENT SESELESAI & APLIKASI SIAP BEROPERASI!  ${NC}"
