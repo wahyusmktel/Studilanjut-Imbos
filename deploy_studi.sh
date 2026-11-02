@@ -1,48 +1,48 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 # ==============================================================================
-# Script Deployment Otomatis Studi Lanjut IMBOS
+# SCRIPT DEPLOYMENT OTOMATIS - STUDI LANJUT IMBOS
 # Domain: https://studi.imbospringsewu.com/
 # ==============================================================================
-
 set -e
 
-# Warna Log Output
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+APP_DIR="/var/www/studilanjutimbos"
 
-echo -e "${BLUE}====================================================${NC}"
-echo -e "${BLUE}  MEMULAI DEPLOYMENT STUDI LANJUT IMBOS             ${NC}"
-echo -e "${BLUE}====================================================${NC}"
+echo "======================================================"
+echo "🚀 [$(date '+%Y-%m-%d %H:%M:%S')] Memulai Deployment Studi Lanjut IMBOS..."
+echo "📂 Target: $APP_DIR"
+echo "======================================================"
 
-# 1. Memperbaiki Permisi Folder Awal (Storage & Cache)
-echo -e "${YELLOW}[1/8] Menyiapkan hak akses folder storage & cache...${NC}"
-CURRENT_USER=${SUDO_USER:-$USER}
-sudo chown -R $CURRENT_USER:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
+cd "$APP_DIR" || { echo "❌ Direktori $APP_DIR tidak ditemukan!"; exit 1; }
+
+# Pastikan git safe directory
+git config --global --add safe.directory "$APP_DIR" || true
+
+# 1. Pastikan hak akses folder .git, storage framework & cache sebelum eksekusi
+echo "🔒 Menyiapkan permission awal..."
+sudo chown -R wahyurah55:wahyurah55 .git
+sudo chmod -R 775 .git
+sudo chown -R www-data:www-data storage/framework storage/logs bootstrap/cache
+sudo chmod -R 775 storage/framework storage/logs bootstrap/cache
 
 # 2. Aktifkan Maintenance Mode
-echo -e "${YELLOW}[2/8] Mengaktifkan Maintenance Mode...${NC}"
+echo "⏸️  Mengaktifkan maintenance mode..."
 php artisan down || true
 
-# 3. Pull Update Terbaru dari Repository Git
-echo -e "${YELLOW}[3/8] Menarik update dari Git (git fetch & reset)...${NC}"
+# 3. Ambil perubahan terbaru dari Git
+echo "📥 Melakukan git fetch and reset origin main..."
 git fetch origin main
 git reset --hard origin/main
 
-# 4. Install / Update Dependensi Composer
-echo -e "${YELLOW}[4/8] Memasang dependensi Composer...${NC}"
+# 4. Install / Update Composer dependencies (Production)
+echo "📦 Menginstall dependency Composer (No Dev)..."
 composer install --no-dev --optimize-autoloader --no-interaction
 
-# 5. Menjalankan Migrasi Database
-echo -e "${YELLOW}[5/8] Menjalankan migrasi database...${NC}"
+# 5. Jalankan migrasi database
+echo "🗄️  Menjalankan migrasi database..."
 php artisan migrate --force
 
-# 6. Menghubungkan Storage Symlink & Optimasi Cache
-echo -e "${YELLOW}[6/8] Memperbarui dan mengoptimalkan cache Laravel...${NC}"
+# 6. Storage Link & Optimasi Cache Laravel
+echo "🧹 Membersihkan and mengoptimasi cache Laravel..."
 php artisan storage:link || true
 php artisan optimize:clear
 php artisan config:cache
@@ -50,18 +50,20 @@ php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
-# 7. Mematikan Maintenance Mode
-echo -e "${YELLOW}[7/8] Mematikan Maintenance Mode (Aplikasi Online)...${NC}"
-php artisan up || sudo php artisan up
+# 7. Nonaktifkan Maintenance Mode
+echo "▶️  Menonaktifkan maintenance mode..."
+php artisan up || true
 
-# 8. Memastikan Hak Akses Akhir Sempurna
-echo -e "${YELLOW}[8/8] Memastikan hak akses akhir (permissions)...${NC}"
-CURRENT_USER=${SUDO_USER:-$USER}
-sudo chown -R $CURRENT_USER:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
+# 8. Set hak akses permission direktori
+echo "🔒 Memperbarui permission direktori storage and cache..."
+sudo chown -R www-data:www-data storage/framework storage/logs bootstrap/cache
+sudo chmod -R 775 storage/framework storage/logs bootstrap/cache
+
+# 9. Reload PHP-FPM
+echo "🔄 Mereload PHP-FPM..."
 sudo systemctl reload php8.4-fpm || true
 
-echo -e "${GREEN}====================================================${NC}"
-echo -e "${GREEN}  DEPLOYMENT SESELESAI & APLIKASI SIAP BEROPERASI!  ${NC}"
-echo -e "${GREEN}  Domain: https://studi.imbospringsewu.com/         ${NC}"
-echo -e "${GREEN}====================================================${NC}"
+echo "======================================================"
+echo "✅ [$(date '+%Y-%m-%d %H:%M:%S')] DEPLOYMENT STUDI LANJUT IMBOS SUKSES!"
+echo "🌐 URL: https://studi.imbospringsewu.com/"
+echo "======================================================
