@@ -107,7 +107,7 @@
                             <td class="align-middle">
                                 <div class="font-weight-700 text-dark">
                                     <i class="fa-regular fa-calendar mr-1 color-primary"></i>
-                                    {{ \Carbon\Carbon::parse($sesi->tanggal)->isoFormat('dddd, D MMM Y') }}
+                                    {{ \Carbon\Carbon::parse($sesi->tanggal)->locale('id')->isoFormat('dddd, D MMM Y') }}
                                 </div>
                                 <div class="text-muted small">
                                     <i class="fa-regular fa-clock mr-1"></i>Pukul {{ $sesi->waktu }} WIB

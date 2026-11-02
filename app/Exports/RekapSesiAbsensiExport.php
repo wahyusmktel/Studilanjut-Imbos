@@ -125,7 +125,7 @@ class RekapSesiAbsensiExport implements FromCollection, WithHeadings, WithStyles
                 $sheet->setCellValue('A3', 'Tim Bimbel / Kelas');
                 $sheet->setCellValue('B3', ': ' . ($this->absensi->kelas->nama_kelas ?? '-'));
                 $sheet->setCellValue('A4', 'Hari, Tanggal');
-                $sheet->setCellValue('B4', ': ' . Carbon::parse($this->absensi->tanggal)->isoFormat('dddd, D MMMM Y') . ' (' . $this->absensi->waktu . ' WIB)');
+                $sheet->setCellValue('B4', ': ' . Carbon::parse($this->absensi->tanggal)->locale('id')->isoFormat('dddd, D MMMM Y') . ' (' . $this->absensi->waktu . ' WIB)');
                 $sheet->setCellValue('A5', 'Pengampu & Mapel');
                 $sheet->setCellValue('B5', ': ' . ($this->absensi->guru->nama ?? '-') . ' - ' . ($this->absensi->guru->mataPelajaran->namaMataPelajaran ?? '-'));
 

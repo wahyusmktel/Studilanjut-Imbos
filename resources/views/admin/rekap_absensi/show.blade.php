@@ -424,7 +424,7 @@
                     </div>
                     <div style="display: flex !important; align-items: center !important; gap: 8px; margin-bottom: 6px; font-size: 13px; color: #1e293b;">
                         <i class="fa-regular fa-calendar text-muted mr-1"></i>
-                        <strong style="font-weight: 700;">{{ \Carbon\Carbon::parse($absensi->tanggal)->isoFormat('dddd, D MMMM Y') }}</strong>
+                        <strong style="font-weight: 700;">{{ \Carbon\Carbon::parse($absensi->tanggal)->locale('id')->isoFormat('dddd, D MMMM Y') }}</strong>
                     </div>
                     <div style="display: flex !important; align-items: center !important; gap: 8px; font-size: 13px; color: #1e293b;">
                         <i class="fa-regular fa-clock text-muted mr-1"></i>
