@@ -369,27 +369,81 @@
 
     @media (max-width: 767.98px) {
         .attendance-scroll-hint {
-            display: block;
+            display: none;
         }
 
         .attendance-table-wrapper {
-            margin-right: -4px;
+            margin-right: 0;
             border-radius: 12px;
+            overflow-x: visible;
         }
 
-        .table-attendance th,
-        .table-attendance td {
-            white-space: nowrap;
+        .table-attendance {
+            min-width: 100%;
         }
 
-        .table-attendance th:nth-child(2),
-        .table-attendance td:nth-child(2) {
-            min-width: 190px;
+        .table-attendance thead {
+            display: none;
         }
 
-        .table-attendance th:nth-child(3),
-        .table-attendance td:nth-child(3) {
-            min-width: 250px;
+        .table-attendance tbody tr {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .table-attendance tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table-attendance tbody td {
+            padding: 0;
+            border: none;
+            white-space: normal;
+        }
+
+        /* Sembunyikan kolom no di baris data mobile */
+        .table-attendance tbody td:first-child:not([colspan]) {
+            display: none;
+        }
+
+        .table-attendance tbody td[colspan] {
+            display: block;
+            width: 100%;
+            padding: 24px 12px !important;
+        }
+
+        /* Nama siswa */
+        .table-attendance tbody td:nth-child(2) {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Container tombol absensi di mobile: lebar penuh, rapi, dan mudah diklik */
+        .table-attendance tbody td:nth-child(3) {
+            display: block;
+            width: 100%;
+        }
+
+        .attendance-pills {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            justify-content: space-between !important;
+        }
+
+        .attendance-pill-label {
+            flex: 1;
+            width: auto;
+            height: 38px;
+            font-size: 0.9rem;
+            border-radius: 10px;
         }
     }
 
@@ -671,9 +725,19 @@
                                 <i class="bi bi-person-check-fill text-primary me-1"></i>
                                 Daftar Kehadiran Siswa
                             </h5>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#addSiswaModal">
-                                <i class="bi bi-plus-lg me-1"></i> Siswa Luar Kelompok
-                            </button>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Aksi Cepat Absensi">
+                                    <button type="button" class="btn btn-outline-success rounded-pill-start px-2 py-1 fw-bold" id="btnHadirSemua" title="Set Semua Hadir">
+                                        <i class="bi bi-check-all me-1"></i>Hadir Semua
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger rounded-pill-end px-2 py-1 fw-bold" id="btnAlpaSemua" title="Set Semua Alpa">
+                                        <i class="bi bi-x-circle me-1"></i>Tidak Hadir Semua
+                                    </button>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" data-bs-toggle="modal" data-bs-target="#addSiswaModal">
+                                    <i class="bi bi-plus-lg me-1"></i> Siswa Luar Kelompok
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Keterangan Singkatan Kehadiran -->
@@ -1005,6 +1069,54 @@
                 } else {
                     tbody.innerHTML = '<tr><td colspan="3" class="text-center py-5 text-muted"><i class="bi bi-arrow-left-circle fs-3 d-block mb-2 text-secondary"></i>Silakan pilih <strong>Kelompok / Kelas</strong> terlebih dahulu di sebelah kiri</td></tr>';
                 }
+            });
+        }
+
+        // Handler Hadir Semua & Tidak Hadir Semua
+        const btnHadirSemua = document.getElementById('btnHadirSemua');
+        const btnAlpaSemua = document.getElementById('btnAlpaSemua');
+
+        function setMassAttendance(val, labelText) {
+            const radioGroups = document.querySelectorAll('#siswa-table-body .attendance-pills');
+            if (radioGroups.length === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Pilih Kelas Terlebih Dahulu',
+                    text: 'Silakan pilih Kelompok / Kelas terlebih dahulu untuk memuat daftar siswa.',
+                    confirmButtonColor: '#25477d'
+                });
+                return;
+            }
+
+            radioGroups.forEach(group => {
+                const radio = group.querySelector(`input[type="radio"][value="${val}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            });
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+            Toast.fire({
+                icon: 'success',
+                title: `Semua siswa ditandai ${labelText}`
+            });
+        }
+
+        if (btnHadirSemua) {
+            btnHadirSemua.addEventListener('click', function() {
+                setMassAttendance('1', 'Hadir');
+            });
+        }
+
+        if (btnAlpaSemua) {
+            btnAlpaSemua.addEventListener('click', function() {
+                setMassAttendance('0', 'Alpa / Tidak Hadir');
             });
         }
 
