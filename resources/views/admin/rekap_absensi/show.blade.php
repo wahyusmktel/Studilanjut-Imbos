@@ -18,170 +18,262 @@
 </div>
 <!-- /Title Breadcrumb -->
 
-<!-- Hero Profile Sesi (Desain Modern 2 Warna Elegan: Navy & Putih) -->
-<div class="student-hero-card mb-4" style="background: linear-gradient(135deg, #1b3562 0%, #25477d 100%); border-radius: 16px; padding: 24px 28px; box-shadow: 0 10px 25px rgba(27, 53, 98, 0.12);">
-    <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 20px;">
-        <div class="d-flex align-items-center" style="gap: 20px;">
-            <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.25); flex-shrink: 0;">
-                <i class="fa-solid fa-users" style="color: #ffffff; font-size: 26px;"></i>
+<!-- Style Efek Gelombang Warna yang Smooth pada Widget Statistik -->
+<style>
+.stat-wave-card {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 22px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.45s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.45s ease;
+    z-index: 1;
+    cursor: default;
+    height: 100%;
+}
+
+/* Gelombang Pertama */
+.stat-wave-card::before {
+    content: '';
+    position: absolute;
+    top: 130%;
+    left: 50%;
+    width: 250%;
+    height: 250%;
+    border-radius: 40%;
+    transform: translate(-50%, 0) rotate(0deg);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    opacity: 0;
+}
+
+/* Gelombang Kedua (Lapisan Gelombang Air untuk kedalaman organik) */
+.stat-wave-card::after {
+    content: '';
+    position: absolute;
+    top: 140%;
+    left: 45%;
+    width: 260%;
+    height: 260%;
+    border-radius: 36%;
+    transform: translate(-50%, 0) rotate(0deg);
+    transition: all 1.0s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    opacity: 0;
+}
+
+/* Tema Warna Gelombang */
+/* 1. Navy / Indigo Wave */
+.stat-wave-card.wave-primary::before {
+    background: linear-gradient(135deg, #1b3562 0%, #312e81 100%);
+}
+.stat-wave-card.wave-primary::after {
+    background: linear-gradient(135deg, #2563eb 0%, #4338ca 100%);
+}
+
+/* 2. Emerald Green Wave */
+.stat-wave-card.wave-success::before {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+.stat-wave-card.wave-success::after {
+    background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+}
+
+/* 3. Rose Red Wave */
+.stat-wave-card.wave-danger::before {
+    background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+}
+.stat-wave-card.wave-danger::after {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+}
+
+/* 4. Sky Blue Wave */
+.stat-wave-card.wave-info::before {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+}
+.stat-wave-card.wave-info::after {
+    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+}
+
+/* Saat Cursor Diarahkan (Hover) */
+.stat-wave-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.14);
+    border-color: transparent;
+}
+
+.stat-wave-card:hover::before {
+    top: -65%;
+    transform: translate(-50%, -20%) rotate(180deg);
+    opacity: 1;
+}
+
+.stat-wave-card:hover::after {
+    top: -75%;
+    transform: translate(-50%, -20%) rotate(360deg);
+    opacity: 0.85;
+}
+
+/* Transisi Teks & Icon */
+.stat-wave-card .stat-icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    transition: all 0.45s ease;
+    flex-shrink: 0;
+}
+
+.stat-wave-card .stat-value,
+.stat-wave-card .stat-label,
+.stat-wave-card .stat-subtext {
+    transition: color 0.4s ease;
+}
+
+.stat-wave-card:hover .stat-icon-box {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+    transform: scale(1.08) rotate(4deg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-wave-card:hover .stat-value,
+.stat-wave-card:hover .stat-label {
+    color: #ffffff !important;
+}
+
+.stat-wave-card:hover .stat-subtext {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+</style>
+
+<!-- Hero Profile Sesi (Hanya Nama Tim/Kelompok & Tombol Aksi di Sebelah Kanan) -->
+<div class="student-hero-card mb-4" style="background: linear-gradient(135deg, #1b3562 0%, #25477d 100%); border-radius: 16px; padding: 22px 28px; box-shadow: 0 10px 25px rgba(27, 53, 98, 0.12);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 16px;">
+        <!-- Kiri: Hanya Nama Tim / Kelompok -->
+        <div class="d-flex align-items-center" style="gap: 16px;">
+            <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.25); flex-shrink: 0;">
+                <i class="fa-solid fa-users" style="color: #ffffff; font-size: 22px;"></i>
             </div>
             <div>
-                <!-- Nama Tim: Putih Tebal & Bersih -->
-                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                    <h2 style="color: #ffffff !important; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.3px;">
-                        {{ $absensi->kelas->nama_kelas ?? 'Tim Bimbel' }}
-                    </h2>
-                    <span style="background: rgba(255, 255, 255, 0.2); color: #ffffff; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.3);">
-                        Sesi Pertemuan
-                    </span>
-                </div>
-                
-                <!-- Metadata Sesi Bersih & Berjarak Rapi -->
-                <div class="d-flex align-items-center flex-wrap" style="gap: 16px; color: #e2e8f0; font-size: 13px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px;">
-                        <i class="fa-regular fa-calendar text-white opacity-75"></i>
-                        <strong>{{ \Carbon\Carbon::parse($absensi->tanggal)->isoFormat('dddd, D MMMM Y') }}</strong>
-                    </span>
-                    <span style="opacity: 0.4;">|</span>
-                    <span style="display: inline-flex; align-items: center; gap: 6px;">
-                        <i class="fa-regular fa-clock text-white opacity-75"></i>
-                        {{ $absensi->waktu }} WIB
-                    </span>
-                    <span style="opacity: 0.4;">|</span>
-                    <span style="display: inline-flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-chalkboard-user text-white opacity-75"></i>
-                        {{ $absensi->guru->nama ?? '-' }} ({{ $absensi->guru->mataPelajaran->namaMataPelajaran ?? '-' }})
-                    </span>
-                </div>
+                <span style="color: rgba(255, 255, 255, 0.75); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 2px;">
+                    Kelompok / Tim Bimbel
+                </span>
+                <h2 style="color: #ffffff !important; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.3px;">
+                    {{ $absensi->kelas->nama_kelas ?? 'Tim Bimbel' }}
+                </h2>
             </div>
         </div>
+
+        <!-- Kanan: Tombol Export Excel & Kembali -->
         <div class="d-flex align-items-center" style="gap: 10px;">
-            <a href="{{ route('admin.rekap-absensi.export', $absensi->id) }}" class="btn-modern btn-modern-success" style="background: #10b981; color: #ffffff; border: none; padding: 10px 18px;" title="Export Data Kehadiran ke Excel">
-                <i class="fa-solid fa-file-excel mr-1"></i>
+            <a href="{{ route('admin.rekap-absensi.export', $absensi->id) }}" class="btn-modern btn-modern-success" style="background: #10b981; color: #ffffff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" title="Export Data Kehadiran ke Excel">
+                <i class="fa-solid fa-file-excel"></i>
                 <span>Export Excel</span>
             </a>
-            <a href="{{ route('admin.rekap-absensi.index') }}" class="btn-modern btn-modern-secondary" style="background: #ffffff; color: #1b3562; border: none; padding: 10px 18px;">
-                <i class="fa-solid fa-arrow-left mr-1"></i>
+            <a href="{{ route('admin.rekap-absensi.index') }}" class="btn-modern btn-modern-secondary" style="background: #ffffff; color: #1b3562; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+                <i class="fa-solid fa-arrow-left"></i>
                 <span>Kembali</span>
             </a>
         </div>
     </div>
 </div>
 
-<!-- Kotak Evaluasi Khusus: Siswa yang Tidak Hadir (Sejajar, Tanpa Border Kiri Tebal, Radius Standar 12px, Margin Rapi) -->
-<div class="row" style="margin-left: -12px; margin-right: -12px; margin-bottom: 24px;">
-    <div class="col-12" style="padding-left: 12px; padding-right: 12px;">
-        <div class="modern-card" style="border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 0;">
-            <div class="modern-card-header d-flex justify-content-between align-items-center flex-wrap" style="padding: 16px 20px; background: #ffffff; border-bottom: 1px solid #f1f5f9; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                <h4 class="font-weight-700 mb-0" style="font-size: 15px; color: {{ $tidakHadirTotal > 0 ? '#b91c1c' : '#15803d' }};">
-                    @if($tidakHadirTotal > 0)
-                        <i class="fa-solid fa-circle-exclamation mr-2"></i>Evaluasi: Ditemukan {{ $tidakHadirTotal }} Siswa Tidak Hadir pada Pertemuan Ini
-                    @else
-                        <i class="fa-solid fa-circle-check mr-2"></i>Evaluasi: Sempurna! Semua Siswa ({{ $hadirList->count() }} Orang) Hadir Lengkap
-                    @endif
-                </h4>
-                <span class="text-muted small">Total Siswa di Tim Ini: <strong>{{ $details->count() }} Orang</strong></span>
+<!-- Widget Statistik Angka dengan Efek Gelombang Warna yang Smooth saat Hover -->
+@php
+    $persentase = $details->count() > 0 ? round(($hadirList->count() / $details->count()) * 100) : 0;
+@endphp
+<div class="row" style="margin-left: -10px; margin-right: -10px; margin-bottom: 24px;">
+    <!-- Card 1: Total Siswa -->
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+        <div class="stat-wave-card wave-primary">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #64748b;">
+                    Total Siswa Tim
+                </span>
+                <div class="stat-icon-box" style="background: #eef2ff; color: #1b3562;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
             </div>
-            <div class="modern-card-body" style="padding: 20px;">
+            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
+                {{ $details->count() }}
+            </div>
+            <div class="stat-subtext small text-muted" style="font-size: 12px;">
+                Anggota terdaftar di tim ini
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Siswa Hadir -->
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+        <div class="stat-wave-card wave-success">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #059669;">
+                    Siswa Hadir
+                </span>
+                <div class="stat-icon-box" style="background: #ecfdf5; color: #059669;">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+            </div>
+            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
+                {{ $hadirList->count() }}
+            </div>
+            <div class="stat-subtext small text-muted" style="font-size: 12px;">
+                Mengikuti sesi bimbingan
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Tidak Hadir (Evaluasi) -->
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+        <div class="stat-wave-card wave-danger">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #e11d48;">
+                    Tidak Hadir (Absen)
+                </span>
+                <div class="stat-icon-box" style="background: #fff1f2; color: #e11d48;">
+                    <i class="fa-solid fa-user-xmark"></i>
+                </div>
+            </div>
+            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
+                {{ $tidakHadirTotal }}
+            </div>
+            <div class="stat-subtext small text-muted" style="font-size: 12px;">
                 @if($tidakHadirTotal > 0)
-                    <div class="row g-3">
-                        <!-- Alpa -->
-                        <div class="col-md-3 col-sm-6 mb-2">
-                            <div class="p-3 rounded-2" style="background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="font-weight-700 text-danger small text-uppercase">
-                                        <i class="fa-solid fa-circle-xmark mr-1"></i>Alpa / Tanpa Ket
-                                    </span>
-                                    <span class="badge badge-danger font-weight-700">{{ $alpaList->count() }}</span>
-                                </div>
-                                @if($alpaList->count() > 0)
-                                    <ul class="list-unstyled mb-0 small" style="line-height: 1.8;">
-                                        @foreach($alpaList as $item)
-                                            <li class="font-weight-600 text-dark">
-                                                • {{ $item->siswa->nama_siswa ?? 'Siswa' }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <span class="text-muted small italic">Nihil (Tidak ada)</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Sakit -->
-                        <div class="col-md-3 col-sm-6 mb-2">
-                            <div class="p-3 rounded-2" style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="font-weight-700 small text-uppercase" style="color: #b45309;">
-                                        <i class="fa-solid fa-user-doctor mr-1"></i>Sakit
-                                    </span>
-                                    <span class="badge badge-warning font-weight-700">{{ $sakitList->count() }}</span>
-                                </div>
-                                @if($sakitList->count() > 0)
-                                    <ul class="list-unstyled mb-0 small" style="line-height: 1.8;">
-                                        @foreach($sakitList as $item)
-                                            <li class="font-weight-600 text-dark">
-                                                • {{ $item->siswa->nama_siswa ?? 'Siswa' }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <span class="text-muted small italic">Nihil (Tidak ada)</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Izin -->
-                        <div class="col-md-3 col-sm-6 mb-2">
-                            <div class="p-3 rounded-2" style="background: #f0f9ff; border: 1px solid #e0f2fe; border-radius: 8px;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="font-weight-700 small text-uppercase" style="color: #0369a1;">
-                                        <i class="fa-solid fa-envelope-open-text mr-1"></i>Izin
-                                    </span>
-                                    <span class="badge badge-info font-weight-700">{{ $izinList->count() }}</span>
-                                </div>
-                                @if($izinList->count() > 0)
-                                    <ul class="list-unstyled mb-0 small" style="line-height: 1.8;">
-                                        @foreach($izinList as $item)
-                                            <li class="font-weight-600 text-dark">
-                                                • {{ $item->siswa->nama_siswa ?? 'Siswa' }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <span class="text-muted small italic">Nihil (Tidak ada)</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Pulang -->
-                        <div class="col-md-3 col-sm-6 mb-2">
-                            <div class="p-3 rounded-2" style="background: #eef2ff; border: 1px solid #e0e7ff; border-radius: 8px;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="font-weight-700 small text-uppercase" style="color: #4338ca;">
-                                        <i class="fa-solid fa-person-walking-arrow-right mr-1"></i>Pulang
-                                    </span>
-                                    <span class="badge font-weight-700" style="background: #6366f1; color: #fff;">{{ $pulangList->count() }}</span>
-                                </div>
-                                @if($pulangList->count() > 0)
-                                    <ul class="list-unstyled mb-0 small" style="line-height: 1.8;">
-                                        @foreach($pulangList as $item)
-                                            <li class="font-weight-600 text-dark">
-                                                • {{ $item->siswa->nama_siswa ?? 'Siswa' }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <span class="text-muted small italic">Nihil (Tidak ada)</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+                    {{ $alpaList->count() }} Alpa · {{ $sakitList->count() }} Sakit · {{ $izinList->count() + $pulangList->count() }} Izin/P
                 @else
-                    <div class="text-center py-3">
-                        <i class="fa-solid fa-circle-check fa-3x text-success mb-2"></i>
-                        <p class="font-weight-600 text-success mb-0">Pertemuan ini dihadiri oleh seluruh siswa tanpa ada yang izin, sakit, maupun alpa.</p>
-                    </div>
+                    Nihil · Semua siswa hadir lengkap
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: Persentase Kehadiran -->
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+        <div class="stat-wave-card wave-info">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #0284c7;">
+                    Tingkat Kehadiran
+                </span>
+                <div class="stat-icon-box" style="background: #f0f9ff; color: #0284c7;">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+            </div>
+            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
+                {{ $persentase }}%
+            </div>
+            <div class="stat-subtext small text-muted" style="font-size: 12px;">
+                @if($persentase == 100)
+                    Sempurna (100% kehadiran)
+                @elseif($persentase >= 80)
+                    Kategori Baik (≥ 80%)
+                @else
+                    Perlu perhatian & evaluasi
                 @endif
             </div>
         </div>
@@ -272,6 +364,21 @@
                 </h4>
             </div>
             <div class="modern-card-body" style="padding: 20px;">
+                <!-- Informasi Sesi Pertemuan (Tanggal & Waktu) -->
+                <div class="p-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
+                    <label class="font-weight-700 text-uppercase mb-2 d-block" style="font-size: 11px; letter-spacing: 0.5px; color: #1b3562;">
+                        <i class="fa-regular fa-calendar-check mr-1 color-primary"></i>Sesi Pertemuan
+                    </label>
+                    <div class="d-flex align-items-center mb-1" style="gap: 8px; font-size: 13px;">
+                        <i class="fa-regular fa-calendar text-muted"></i>
+                        <span class="font-weight-700 text-dark">{{ \Carbon\Carbon::parse($absensi->tanggal)->isoFormat('dddd, D MMMM Y') }}</span>
+                    </div>
+                    <div class="d-flex align-items-center" style="gap: 8px; font-size: 13px;">
+                        <i class="fa-regular fa-clock text-muted"></i>
+                        <span class="font-weight-600 text-dark">{{ $absensi->waktu }} WIB</span>
+                    </div>
+                </div>
+
                 <label class="font-weight-700 small text-muted text-uppercase mb-1">Mata Pelajaran</label>
                 <p class="font-weight-600 text-dark mb-3">{{ $absensi->guru->mataPelajaran->namaMataPelajaran ?? '-' }}</p>
 
