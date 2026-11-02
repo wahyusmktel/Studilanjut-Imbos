@@ -18,16 +18,31 @@
 </div>
 <!-- /Title Breadcrumb -->
 
-<!-- Style Efek Gelombang Warna yang Smooth pada Widget Statistik -->
+<!-- Styling & Utility Classes khusus halaman ini -->
 <style>
+/* Utilities Spacing & Flexbox */
+.mr-1 { margin-right: 4px !important; }
+.mr-2 { margin-right: 8px !important; }
+.mr-3 { margin-right: 12px !important; }
+.ml-1 { margin-left: 4px !important; }
+.ml-2 { margin-left: 8px !important; }
+.mb-1 { margin-bottom: 4px !important; }
+.mb-2 { margin-bottom: 8px !important; }
+.mb-3 { margin-bottom: 12px !important; }
+.mb-4 { margin-bottom: 16px !important; }
+.d-flex { display: flex !important; }
+.align-items-center { align-items: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+
+/* Stat Wave Cards */
 .stat-wave-card {
     position: relative;
     overflow: hidden;
     background: #ffffff;
     border-radius: 16px;
-    padding: 20px 22px;
+    padding: 22px 24px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
     transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.45s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.45s ease;
     z-index: 1;
     cursor: default;
@@ -116,25 +131,69 @@
     opacity: 0.85;
 }
 
-/* Transisi Teks & Icon */
+/* Layout Komponen Stat */
+.stat-wave-card .stat-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #64748b;
+    margin-bottom: 12px;
+    transition: color 0.4s ease;
+}
+
+.stat-wave-card .stat-body {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
 .stat-wave-card .stat-icon-box {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 19px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 14px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 22px;
     transition: all 0.45s ease;
     flex-shrink: 0;
 }
 
-.stat-wave-card .stat-value,
-.stat-wave-card .stat-label,
-.stat-wave-card .stat-subtext {
+.stat-wave-card .stat-num-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.stat-wave-card .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    color: #1e293b;
     transition: color 0.4s ease;
 }
 
+.stat-wave-card .stat-unit {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-top: 3px;
+    transition: color 0.4s ease;
+}
+
+.stat-wave-card .stat-subtext {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
+    transition: color 0.4s ease;
+}
+
+/* Hover effects */
 .stat-wave-card:hover .stat-icon-box {
     background: rgba(255, 255, 255, 0.22) !important;
     color: #ffffff !important;
@@ -143,7 +202,8 @@
 }
 
 .stat-wave-card:hover .stat-value,
-.stat-wave-card:hover .stat-label {
+.stat-wave-card:hover .stat-label,
+.stat-wave-card:hover .stat-unit {
     color: #ffffff !important;
 }
 
@@ -152,98 +212,89 @@
 }
 </style>
 
-<!-- Hero Profile Sesi (Hanya Nama Tim/Kelompok & Tombol Aksi di Sebelah Kanan) -->
-<div class="student-hero-card mb-4" style="background: linear-gradient(135deg, #1b3562 0%, #25477d 100%); border-radius: 16px; padding: 22px 28px; box-shadow: 0 10px 25px rgba(27, 53, 98, 0.12);">
-    <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 16px;">
-        <!-- Kiri: Hanya Nama Tim / Kelompok -->
-        <div class="d-flex align-items-center" style="gap: 16px;">
-            <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.25); flex-shrink: 0;">
-                <i class="fa-solid fa-users" style="color: #ffffff; font-size: 22px;"></i>
-            </div>
-            <div>
-                <span style="color: rgba(255, 255, 255, 0.75); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 2px;">
-                    Kelompok / Tim Bimbel
-                </span>
-                <h2 style="color: #ffffff !important; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.3px;">
-                    {{ $absensi->kelas->nama_kelas ?? 'Tim Bimbel' }}
-                </h2>
-            </div>
+<!-- Hero Profile Sesi: Nama Tim di Kiri, Tombol Aksi di Sebelah Kanan -->
+<div class="student-hero-card mb-4" style="background: linear-gradient(135deg, #1b3562 0%, #25477d 100%) !important; border-radius: 16px; padding: 22px 28px; box-shadow: 0 10px 25px rgba(27, 53, 98, 0.12); display: flex !important; justify-content: space-between !important; align-items: center !important; flex-wrap: wrap !important; gap: 16px;">
+    <!-- Kiri: Hanya Nama Tim / Kelompok -->
+    <div class="student-hero-profile" style="display: flex !important; align-items: center !important; gap: 16px;">
+        <div class="student-hero-avatar" style="width: 52px; height: 52px; min-width: 52px; border-radius: 14px; background: rgba(255, 255, 255, 0.15) !important; display: flex !important; align-items: center !important; justify-content: center !important; border: 1px solid rgba(255, 255, 255, 0.25);">
+            <i class="fa-solid fa-users" style="color: #ffffff; font-size: 22px;"></i>
         </div>
+        <div class="student-hero-info" style="display: flex !important; flex-direction: column !important; gap: 4px;">
+            <span style="color: rgba(255, 255, 255, 0.75); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: block;">
+                Kelompok / Tim Bimbel
+            </span>
+            <h2 class="student-hero-name" style="color: #ffffff !important; font-size: 24px !important; font-weight: 800 !important; margin: 0 !important; line-height: 1.2 !important; letter-spacing: -0.3px;">
+                {{ $absensi->kelas->nama_kelas ?? 'Tim Bimbel' }}
+            </h2>
+        </div>
+    </div>
 
-        <!-- Kanan: Tombol Export Excel & Kembali -->
-        <div class="d-flex align-items-center" style="gap: 10px;">
-            <a href="{{ route('admin.rekap-absensi.export', $absensi->id) }}" class="btn-modern btn-modern-success" style="background: #10b981; color: #ffffff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" title="Export Data Kehadiran ke Excel">
-                <i class="fa-solid fa-file-excel"></i>
-                <span>Export Excel</span>
-            </a>
-            <a href="{{ route('admin.rekap-absensi.index') }}" class="btn-modern btn-modern-secondary" style="background: #ffffff; color: #1b3562; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>Kembali</span>
-            </a>
-        </div>
+    <!-- Kanan: Tombol Export Excel & Kembali -->
+    <div class="student-hero-actions" style="display: flex !important; align-items: center !important; gap: 12px; margin-left: auto;">
+        <a href="{{ route('admin.rekap-absensi.export', $absensi->id) }}" class="btn-modern btn-modern-success" style="background: #10b981; color: #ffffff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; display: inline-flex !important; align-items: center !important; gap: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);" title="Export Data Kehadiran ke Excel">
+            <i class="fa-solid fa-file-excel mr-1"></i>
+            <span>Export Excel</span>
+        </a>
+        <a href="{{ route('admin.rekap-absensi.index') }}" class="btn-modern btn-modern-secondary" style="background: #ffffff; color: #1b3562; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; display: inline-flex !important; align-items: center !important; gap: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <i class="fa-solid fa-arrow-left mr-1"></i>
+            <span>Kembali</span>
+        </a>
     </div>
 </div>
 
-<!-- Widget Statistik Angka dengan Efek Gelombang Warna yang Smooth saat Hover -->
+<!-- Widget Statistik Angka dengan Efek Gelombang Warna yang Smooth saat Hover (Angka di Kanan Icon) -->
 @php
     $persentase = $details->count() > 0 ? round(($hadirList->count() / $details->count()) * 100) : 0;
 @endphp
 <div class="row" style="margin-left: -10px; margin-right: -10px; margin-bottom: 24px;">
-    <!-- Card 1: Total Siswa -->
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+    <!-- Card 1: Total Siswa Tim -->
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="padding-left: 10px; padding-right: 10px; margin-bottom: 16px;">
         <div class="stat-wave-card wave-primary">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #64748b;">
-                    Total Siswa Tim
-                </span>
+            <span class="stat-label">Total Siswa Tim</span>
+            <div class="stat-body">
                 <div class="stat-icon-box" style="background: #eef2ff; color: #1b3562;">
                     <i class="fa-solid fa-users"></i>
                 </div>
+                <div class="stat-num-wrap">
+                    <div class="stat-value">{{ $details->count() }}</div>
+                    <div class="stat-unit">Siswa</div>
+                </div>
             </div>
-            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
-                {{ $details->count() }}
-            </div>
-            <div class="stat-subtext small text-muted" style="font-size: 12px;">
-                Anggota terdaftar di tim ini
-            </div>
+            <div class="stat-subtext">Anggota terdaftar di tim ini</div>
         </div>
     </div>
 
     <!-- Card 2: Siswa Hadir -->
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="padding-left: 10px; padding-right: 10px; margin-bottom: 16px;">
         <div class="stat-wave-card wave-success">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #059669;">
-                    Siswa Hadir
-                </span>
+            <span class="stat-label" style="color: #059669;">Siswa Hadir</span>
+            <div class="stat-body">
                 <div class="stat-icon-box" style="background: #ecfdf5; color: #059669;">
                     <i class="fa-solid fa-user-check"></i>
                 </div>
+                <div class="stat-num-wrap">
+                    <div class="stat-value">{{ $hadirList->count() }}</div>
+                    <div class="stat-unit">Siswa</div>
+                </div>
             </div>
-            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
-                {{ $hadirList->count() }}
-            </div>
-            <div class="stat-subtext small text-muted" style="font-size: 12px;">
-                Mengikuti sesi bimbingan
-            </div>
+            <div class="stat-subtext">Mengikuti sesi bimbingan</div>
         </div>
     </div>
 
-    <!-- Card 3: Tidak Hadir (Evaluasi) -->
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+    <!-- Card 3: Tidak Hadir (Absen) -->
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="padding-left: 10px; padding-right: 10px; margin-bottom: 16px;">
         <div class="stat-wave-card wave-danger">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #e11d48;">
-                    Tidak Hadir (Absen)
-                </span>
+            <span class="stat-label" style="color: #e11d48;">Tidak Hadir (Absen)</span>
+            <div class="stat-body">
                 <div class="stat-icon-box" style="background: #fff1f2; color: #e11d48;">
                     <i class="fa-solid fa-user-xmark"></i>
                 </div>
+                <div class="stat-num-wrap">
+                    <div class="stat-value">{{ $tidakHadirTotal }}</div>
+                    <div class="stat-unit">Siswa</div>
+                </div>
             </div>
-            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
-                {{ $tidakHadirTotal }}
-            </div>
-            <div class="stat-subtext small text-muted" style="font-size: 12px;">
+            <div class="stat-subtext">
                 @if($tidakHadirTotal > 0)
                     {{ $alpaList->count() }} Alpa · {{ $sakitList->count() }} Sakit · {{ $izinList->count() + $pulangList->count() }} Izin/P
                 @else
@@ -253,23 +304,22 @@
         </div>
     </div>
 
-    <!-- Card 4: Persentase Kehadiran -->
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding-left: 10px; padding-right: 10px;">
+    <!-- Card 4: Tingkat Kehadiran -->
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="padding-left: 10px; padding-right: 10px; margin-bottom: 16px;">
         <div class="stat-wave-card wave-info">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="stat-label font-weight-700 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; color: #0284c7;">
-                    Tingkat Kehadiran
-                </span>
+            <span class="stat-label" style="color: #0284c7;">Tingkat Kehadiran</span>
+            <div class="stat-body">
                 <div class="stat-icon-box" style="background: #f0f9ff; color: #0284c7;">
                     <i class="fa-solid fa-chart-pie"></i>
                 </div>
+                <div class="stat-num-wrap">
+                    <div class="stat-value">{{ $persentase }}%</div>
+                    <div class="stat-unit">Kehadiran</div>
+                </div>
             </div>
-            <div class="stat-value font-weight-800 text-dark" style="font-size: 30px; line-height: 1.1; margin-bottom: 4px;">
-                {{ $persentase }}%
-            </div>
-            <div class="stat-subtext small text-muted" style="font-size: 12px;">
+            <div class="stat-subtext">
                 @if($persentase == 100)
-                    Sempurna (100% kehadiran)
+                    Sempurna (100% masuk)
                 @elseif($persentase >= 80)
                     Kategori Baik (≥ 80%)
                 @else
@@ -282,18 +332,19 @@
 
 <div class="row" style="margin-left: -12px; margin-right: -12px;">
     <!-- Kolom Kiri: Tabel Detail Seluruh Siswa dengan Filter Status -->
-    <div class="col-lg-8 mb-4" style="padding-left: 12px; padding-right: 12px;">
-        <div class="modern-table-card" style="border-radius: 12px;">
-            <div class="modern-table-header d-flex justify-content-between align-items-center flex-wrap" style="background: #ffffff; padding: 16px 22px; gap: 12px;">
+    <div class="col-md-8 col-sm-12 col-xs-12" style="padding-left: 12px; padding-right: 12px; margin-bottom: 24px;">
+        <div class="modern-table-card" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(0,0,0,0.03); background: #ffffff; overflow: hidden;">
+            <div class="modern-table-header" style="background: #ffffff; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex !important; justify-content: space-between !important; align-items: center !important; flex-wrap: wrap !important; gap: 12px;">
                 <div>
-                    <h4 class="font-weight-700 txt-dark mb-0" style="font-size: 16px;">
-                        <i class="fa-solid fa-user-check color-primary mr-2"></i>Daftar Kehadiran Siswa
+                    <h4 class="font-weight-700 txt-dark mb-0" style="font-size: 16px; margin: 0; display: flex !important; align-items: center !important; gap: 8px;">
+                        <i class="fa-solid fa-user-check color-primary mr-1"></i>
+                        <span>Daftar Kehadiran Siswa</span>
                     </h4>
                 </div>
                 <!-- Filter Status Kehadiran Siswa -->
-                <div class="d-flex align-items-center" style="gap: 8px;">
+                <div style="display: flex !important; align-items: center !important; gap: 8px;">
                     <span class="small font-weight-600 text-muted">Filter:</span>
-                    <select id="filterKehadiranSiswa" class="form-control form-control-sm" style="width: auto; height: 34px; border-radius: 6px;">
+                    <select id="filterKehadiranSiswa" class="form-control input-sm" style="width: auto; height: 36px; border-radius: 8px; font-weight: 600;">
                         <option value="all">Semua Status ({{ $details->count() }})</option>
                         <option value="1">Hadir ({{ $hadirList->count() }})</option>
                         <option value="0">Alpa ({{ $alpaList->count() }})</option>
@@ -307,27 +358,27 @@
                 <div class="table-responsive">
                     <table class="table table-hover mb-0" id="tableSiswaAttendance">
                         <thead>
-                            <tr>
-                                <th width="50" class="text-center">No</th>
-                                <th>Nama Lengkap Siswa</th>
-                                <th class="text-center" width="160">Status Kehadiran</th>
+                            <tr style="background: #f8fafc;">
+                                <th width="50" class="text-center" style="padding: 14px 16px;">No</th>
+                                <th style="padding: 14px 16px;">Nama Lengkap Siswa</th>
+                                <th class="text-center" width="180" style="padding: 14px 16px;">Status Kehadiran</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($details as $idx => $d)
                                 <tr class="siswa-row" data-status="{{ $d->kehadiran }}" style="{{ in_array($d->kehadiran, [0, 2, 3, 4]) ? 'background-color: #fffaf0;' : '' }}">
-                                    <td class="text-center font-weight-600 align-middle row-number">{{ $idx + 1 }}</td>
-                                    <td class="align-middle">
+                                    <td class="text-center font-weight-600 align-middle row-number" style="padding: 14px 16px;">{{ $idx + 1 }}</td>
+                                    <td class="align-middle" style="padding: 14px 16px;">
                                         <span class="font-weight-700 text-dark" style="font-size: 14px;">
                                             {{ $d->siswa->nama_siswa ?? '-' }}
                                         </span>
                                         @if(in_array($d->kehadiran, [0, 2, 3, 4]))
-                                            <span class="badge badge-warning text-dark ml-2 font-weight-600" style="font-size: 10px;">
+                                            <span class="badge badge-warning text-dark ml-2 font-weight-600" style="font-size: 10px; padding: 3px 8px; border-radius: 4px;">
                                                 Evaluasi
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center" style="padding: 14px 16px;">
                                         @if($d->kehadiran == 1)
                                             <span class="badge-modern success"><i class="fa-solid fa-circle-check mr-1"></i> Hadir</span>
                                         @elseif($d->kehadiran == 0)
@@ -354,63 +405,85 @@
         </div>
     </div>
 
-    <!-- Kolom Kanan: Rincian Catatan & Foto Dokumentasi Sesi (Berjarak Rapi) -->
-    <div class="col-lg-4 mb-4" style="padding-left: 12px; padding-right: 12px;">
-        <!-- Card Materi & Catatan -->
-        <div class="modern-card mb-4" style="border-radius: 12px; margin-bottom: 24px !important;">
-            <div class="modern-card-header" style="background: #ffffff; padding: 16px 20px; border-bottom: 1px solid #f1f5f9;">
-                <h4 class="modern-card-title mb-0" style="font-size: 15px;">
-                    <i class="fa-solid fa-book-open color-primary mr-2"></i>Materi & Catatan Sesi
+    <!-- Kolom Kanan: Rincian Catatan & Foto Dokumentasi Sesi -->
+    <div class="col-md-4 col-sm-12 col-xs-12" style="padding-left: 12px; padding-right: 12px; margin-bottom: 24px;">
+        <!-- Card Materi & Catatan (Berjarak Luas, Rapi, Margin Nyaman) -->
+        <div class="modern-card" style="border-radius: 14px; margin-bottom: 24px !important; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(0,0,0,0.03); background: #ffffff;">
+            <div class="modern-card-header" style="background: #ffffff; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex !important; align-items: center !important;">
+                <h4 class="modern-card-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #1b3562; display: flex !important; align-items: center !important; gap: 8px;">
+                    <i class="fa-solid fa-book-open mr-2" style="color: #1b3562;"></i>
+                    <span>Materi & Catatan Sesi</span>
                 </h4>
             </div>
-            <div class="modern-card-body" style="padding: 20px;">
+            <div class="modern-card-body" style="padding: 24px;">
                 <!-- Informasi Sesi Pertemuan (Tanggal & Waktu) -->
-                <div class="p-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <label class="font-weight-700 text-uppercase mb-2 d-block" style="font-size: 11px; letter-spacing: 0.5px; color: #1b3562;">
-                        <i class="fa-regular fa-calendar-check mr-1 color-primary"></i>Sesi Pertemuan
-                    </label>
-                    <div class="d-flex align-items-center mb-1" style="gap: 8px; font-size: 13px;">
-                        <i class="fa-regular fa-calendar text-muted"></i>
-                        <span class="font-weight-700 text-dark">{{ \Carbon\Carbon::parse($absensi->tanggal)->isoFormat('dddd, D MMMM Y') }}</span>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #1b3562; margin-bottom: 10px; display: flex !important; align-items: center !important; gap: 6px;">
+                        <i class="fa-regular fa-calendar-check mr-1" style="color: #2563eb;"></i>
+                        <span>Sesi Pertemuan</span>
                     </div>
-                    <div class="d-flex align-items-center" style="gap: 8px; font-size: 13px;">
-                        <i class="fa-regular fa-clock text-muted"></i>
-                        <span class="font-weight-600 text-dark">{{ $absensi->waktu }} WIB</span>
+                    <div style="display: flex !important; align-items: center !important; gap: 8px; margin-bottom: 6px; font-size: 13px; color: #1e293b;">
+                        <i class="fa-regular fa-calendar text-muted mr-1"></i>
+                        <strong style="font-weight: 700;">{{ \Carbon\Carbon::parse($absensi->tanggal)->isoFormat('dddd, D MMMM Y') }}</strong>
+                    </div>
+                    <div style="display: flex !important; align-items: center !important; gap: 8px; font-size: 13px; color: #1e293b;">
+                        <i class="fa-regular fa-clock text-muted mr-1"></i>
+                        <span>{{ $absensi->waktu }} WIB</span>
                     </div>
                 </div>
 
-                <label class="font-weight-700 small text-muted text-uppercase mb-1">Mata Pelajaran</label>
-                <p class="font-weight-600 text-dark mb-3">{{ $absensi->guru->mataPelajaran->namaMataPelajaran ?? '-' }}</p>
+                <!-- Detail Mata Pelajaran & Pengampu -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
+                    <div style="margin-bottom: 14px;">
+                        <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; margin-bottom: 4px;">
+                            <i class="fa-solid fa-book-bookmark mr-1 text-muted"></i>Mata Pelajaran
+                        </span>
+                        <div style="font-size: 14px; font-weight: 700; color: #1e293b;">
+                            {{ $absensi->guru->mataPelajaran->namaMataPelajaran ?? '-' }}
+                        </div>
+                    </div>
+                    <div style="border-top: 1px dashed #e2e8f0; padding-top: 12px;">
+                        <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; margin-bottom: 4px;">
+                            <i class="fa-solid fa-chalkboard-user mr-1 text-muted"></i>Guru Pengampu
+                        </span>
+                        <div style="font-size: 14px; font-weight: 700; color: #1e293b;">
+                            {{ $absensi->guru->nama ?? '-' }}
+                        </div>
+                    </div>
+                </div>
 
-                <label class="font-weight-700 small text-muted text-uppercase mb-1">Guru Pengampu</label>
-                <p class="font-weight-600 text-dark mb-3">{{ $absensi->guru->nama ?? '-' }}</p>
-
-                <label class="font-weight-700 small text-muted text-uppercase mb-1">Materi / Catatan Guru</label>
-                <div class="p-3 rounded-2 bg-light border text-dark font-weight-500" style="line-height: 1.6; border-radius: 8px;">
-                    {{ $absensi->catatan ?: 'Tidak ada catatan khusus pada sesi ini.' }}
+                <!-- Materi / Catatan Guru -->
+                <div>
+                    <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; margin-bottom: 8px;">
+                        <i class="fa-solid fa-pen-to-square mr-1 text-muted"></i>Materi / Catatan Guru
+                    </span>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #334155; line-height: 1.6; min-height: 60px;">
+                        {{ $absensi->catatan ?: 'Tidak ada catatan khusus pada sesi ini.' }}
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Card Foto Dokumentasi -->
-        <div class="modern-card" style="border-radius: 12px;">
-            <div class="modern-card-header" style="background: #ffffff; padding: 16px 20px; border-bottom: 1px solid #f1f5f9;">
-                <h4 class="modern-card-title mb-0" style="font-size: 15px;">
-                    <i class="fa-solid fa-camera color-primary mr-2"></i>Foto Bukti Sesi
+        <div class="modern-card" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(0,0,0,0.03); background: #ffffff;">
+            <div class="modern-card-header" style="background: #ffffff; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex !important; align-items: center !important;">
+                <h4 class="modern-card-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #1b3562; display: flex !important; align-items: center !important; gap: 8px;">
+                    <i class="fa-solid fa-camera mr-2" style="color: #1b3562;"></i>
+                    <span>Foto Bukti Sesi</span>
                 </h4>
             </div>
-            <div class="modern-card-body text-center" style="padding: 20px;">
+            <div class="modern-card-body text-center" style="padding: 24px;">
                 @if($absensi->foto)
-                    <div style="position: relative; overflow: hidden; border-radius: 10px; cursor: pointer;" id="triggerPhotoModal">
+                    <div style="position: relative; overflow: hidden; border-radius: 12px; cursor: pointer; border: 1px solid #e2e8f0;" id="triggerPhotoModal">
                         <img src="{{ asset('storage/' . $absensi->foto) }}" alt="Foto Dokumentasi Sesi" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: 100%; object-fit: cover; transition: transform 0.3s ease;">
                         <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">
                             <i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik untuk Zoom
                         </div>
                     </div>
                 @else
-                    <div class="py-4 text-muted">
-                        <i class="fa-regular fa-image fa-2x mb-2 d-block opacity-50"></i>
-                        <span class="small">Tidak ada foto dokumentasi yang diupload</span>
+                    <div class="py-4 text-muted" style="padding: 30px 0;">
+                        <i class="fa-regular fa-image fa-2x mb-2 d-block opacity-50" style="font-size: 36px; margin-bottom: 10px;"></i>
+                        <span class="small font-weight-600">Tidak ada foto dokumentasi yang diupload</span>
                     </div>
                 @endif
             </div>
