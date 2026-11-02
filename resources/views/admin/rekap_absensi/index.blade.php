@@ -94,6 +94,7 @@
                         <th width="50" class="text-center">No</th>
                         <th style="min-width: 170px;">Tanggal & Waktu</th>
                         <th style="min-width: 180px;">Tim Bimbel / Kelas</th>
+                        <th style="min-width: 150px;" class="text-center">Hadir / Tidak Hadir</th>
                         <th style="min-width: 200px;">Pengampu & Materi</th>
                         <th width="120" class="text-center">Aksi</th>
                     </tr>
@@ -118,6 +119,25 @@
                                     <i class="fa-solid fa-users mr-1"></i>{{ $sesi->kelas->nama_kelas ?? 'Tim Bimbel' }}
                                 </span>
                             </td>
+                            <td class="align-middle text-center">
+                                @php
+                                    $hadir = $sesi->details->where('kehadiran', 1)->count();
+                                    $tidakHadir = $sesi->details->whereIn('kehadiran', [0, 2, 3, 4])->count();
+                                @endphp
+                                <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <!-- Hadir (Label Hijau Angka Saja) -->
+                                    <span class="badge badge-pill font-weight-700" style="background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 6px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;" title="Hadir: {{ $hadir }} siswa">
+                                        <i class="fa-solid fa-check" style="font-size: 11px;"></i>
+                                        <span>{{ $hadir }}</span>
+                                    </span>
+
+                                    <!-- Tidak Hadir (Label Merah Angka Saja - Alpa, Sakit, Izin, Pulang) -->
+                                    <span class="badge badge-pill font-weight-700" style="background-color: {{ $tidakHadir > 0 ? '#fee2e2' : '#f1f5f9' }}; color: {{ $tidakHadir > 0 ? '#b91c1c' : '#64748b' }}; border: 1px solid {{ $tidakHadir > 0 ? '#fca5a5' : '#e2e8f0' }}; padding: 6px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;" title="Tidak Hadir (Alpa/Sakit/Izin/Pulang): {{ $tidakHadir }} siswa">
+                                        <i class="fa-solid fa-xmark" style="font-size: 11px;"></i>
+                                        <span>{{ $tidakHadir }}</span>
+                                    </span>
+                                </div>
+                            </td>
                             <td class="align-middle">
                                 <div class="font-weight-600 text-dark">{{ $sesi->guru->nama ?? '-' }}</div>
                                 <div class="text-muted small">
@@ -133,7 +153,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
+                            <td colspan="6" class="text-center py-5 text-muted">
                                 <div class="empty-state">
                                     <i class="fa-solid fa-clipboard-question fa-3x mb-3 text-secondary"></i>
                                     <h6 class="font-weight-600">Tidak ada sesi bimbingan ditemukan</h6>
