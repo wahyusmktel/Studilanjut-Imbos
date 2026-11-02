@@ -181,6 +181,7 @@ Route::prefix('admin')->group(function () {
         // Route Rekap Sesi & Tim Bimbel
         Route::get('/rekap-absensi', [AdminRekapAbsensiController::class, 'index'])->name('admin.rekap-absensi.index');
         Route::get('/rekap-absensi/{id}', [AdminRekapAbsensiController::class, 'show'])->name('admin.rekap-absensi.show');
+        Route::get('/rekap-absensi/{id}/export', [AdminRekapAbsensiController::class, 'export'])->name('admin.rekap-absensi.export');
 
         // Routes untuk Jenis Perguruan Tinggi
         Route::get('/jenis-pt', [AdminJenisPtController::class, 'index'])->name('admin.jenis_pt.index');

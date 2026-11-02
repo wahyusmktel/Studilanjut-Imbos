@@ -7,6 +7,8 @@ use App\Models\Absensi;
 use App\Models\Kelas;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RekapSesiAbsensiExport;
 
 class AdminRekapAbsensiController extends Controller
 {
@@ -67,5 +69,12 @@ class AdminRekapAbsensiController extends Controller
             'pulangList',
             'tidakHadirTotal'
         ));
+    }
+
+    public function export($id)
+    {
+        $absensi = Absensi::with('kelas')->findOrFail($id);
+        $fileName = 'Rekap_Absensi_' . str_replace(' ', '_', $absensi->kelas->nama_kelas ?? 'Tim') . '_' . $absensi->tanggal . '.xlsx';
+        return Excel::download(new RekapSesiAbsensiExport($id), $fileName);
     }
 }
