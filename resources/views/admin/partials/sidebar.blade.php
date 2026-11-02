@@ -102,13 +102,16 @@
                     <span class="sidebar-menu-text">Absensi</span>
                     <span class="sidebar-arrow"><i class="fa-solid fa-chevron-down"></i></span>
                 </a>
-                <ul class="sidebar-submenu {{ Request::is('admin/absensi*') ? 'open' : '' }}">
+                <ul class="sidebar-submenu {{ Request::is('admin/absensi*', 'admin/rekap-absensi*') ? 'open' : '' }}">
                     <li class="sidebar-submenu-header">Absensi</li>
-                    <li class="sidebar-submenu-item {{ Request::is('admin/absensi') || Request::is('admin/absensi/*') ? 'active' : '' }}">
-                        <a href="/admin/absensi" class="sidebar-submenu-link {{ Request::is('admin/absensi') || Request::is('admin/absensi/*') ? 'active' : '' }}">Data Absensi Siswa</a>
+                    <li class="sidebar-submenu-item {{ Request::is('admin/absensi') || (Request::is('admin/absensi/*') && !Request::is('admin/absensi-guru*')) ? 'active' : '' }}">
+                        <a href="/admin/absensi" class="sidebar-submenu-link {{ Request::is('admin/absensi') || (Request::is('admin/absensi/*') && !Request::is('admin/absensi-guru*')) ? 'active' : '' }}">Data Absensi Siswa</a>
                     </li>
                     <li class="sidebar-submenu-item {{ Request::is('admin/absensi-guru*') ? 'active' : '' }}">
                         <a href="/admin/absensi-guru" class="sidebar-submenu-link {{ Request::is('admin/absensi-guru*') ? 'active' : '' }}">Data Absensi Guru</a>
+                    </li>
+                    <li class="sidebar-submenu-item {{ Request::is('admin/rekap-absensi*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.rekap-absensi.index') }}" class="sidebar-submenu-link {{ Request::is('admin/rekap-absensi*') ? 'active' : '' }}">Rekap Sesi & Tim Bimbel</a>
                     </li>
                 </ul>
             </li>

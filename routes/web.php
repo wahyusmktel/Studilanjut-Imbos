@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\AdminKomentarController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminNilaiController;
 use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\AdminRekapAbsensiController;
 use App\Http\Controllers\Admin\AdminSettingSertifikatController;
 use App\Http\Controllers\Admin\AdminTahunPelajaranController;
 use App\Http\Controllers\Admin\AdminTanggapanController;
@@ -176,6 +177,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/absensi-guru/{id}', [AbsensiGurubaruController::class, 'show'])->name('admin.absensi-guru.show');
         Route::get('/admin/absensi-guru/export', [AbsensiGurubaruController::class, 'export'])->name('admin.absensi-guru.export');
         Route::delete('/absensi/{id}', [AbsensiGurubaruController::class, 'destroy'])->name('admin.absensi.destroy');
+
+        // Route Rekap Sesi & Tim Bimbel
+        Route::get('/rekap-absensi', [AdminRekapAbsensiController::class, 'index'])->name('admin.rekap-absensi.index');
+        Route::get('/rekap-absensi/{id}', [AdminRekapAbsensiController::class, 'show'])->name('admin.rekap-absensi.show');
 
         // Routes untuk Jenis Perguruan Tinggi
         Route::get('/jenis-pt', [AdminJenisPtController::class, 'index'])->name('admin.jenis_pt.index');
