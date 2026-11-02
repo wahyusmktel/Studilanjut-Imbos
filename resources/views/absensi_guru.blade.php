@@ -771,6 +771,14 @@
                             </table>
                         </div>
 
+                        <!-- Tombol Simpan Cadangan Khusus Mobile (Bawah Tabel Siswa) -->
+                        <div class="d-block d-lg-none mt-3">
+                            <button type="submit" class="btn-imbos-submit w-100 justify-content-center py-3 shadow-lg">
+                                <i class="bi bi-save-fill"></i>
+                                <span>SIMPAN DATA ABSENSI</span>
+                            </button>
+                        </div>
+
                         <!-- Modal Tambah Siswa -->
                         <div class="modal fade" id="addSiswaModal" tabindex="-1" aria-labelledby="addSiswaModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
